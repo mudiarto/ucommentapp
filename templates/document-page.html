@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>{{ html_title }}</title>
+</head>
+
+<body id="ucomment-html-body">
+
+{{ prefix_html|safe }}  <!-- HTML included from conf/settings.py file -->
+
+<!-- All HTML elements contained within this DIV should be embedded within
+     your web application, modifying the CSS to suit your site.        -->
+<div id="ucomment-document-container">
+
+	<style type="text/css" media="all"><!--  @import url({{stylesheet_link}}); --></style>
+
+	<div id="ucomment-header"><h1>
+		<a href="{{ root_link.link }}" title="{{ root_link.title }}">{{ root_link.title }}</a></h1>
+	</div><!--#ucomment-header -->
+
+	<div id="ucomment-navigation-top" class="ucomment-navigation">
+		<div class="ucomment-show-hide-ucomments" style="display: none;">Hide comments<!--THIS WILL BE REPLACED BY JAVASCRIPT--></div>
+		<div class="ucomment-nav-links">{{ nav_links|safe }}</div>
+	</div> <!--#ucomment-navigation-->
+
+	<div id="ucomment-contentwrap">
+
+		<div id="ucomment-content-main">
+			<div id="ucomment-border">
+				<div id="ucomment-section-body">
+					{{ body_html|safe }}
+				</div><!--#ucomment-section-body-->
+			</div> <!--#ucomment-border-->
+		</div><!--ucomment-content-main-->
+
+		<div id="ucomment-content-related">
+
+			<div id="ucomment-search-box-region">
+				<h2>Search entire document</h2>
+				<!-- Use POST because there might be non-latin characters in query -->
+				<form method="post" action="/set/from/javascript/settings/" id="ucomment-search-form">
+					{% csrf_token %}
+					<input id="ucomment-search-box" name="search_terms" type="search" placeholder="Search inside the document ..." value="{{search_value}}" />
+					<input id="ucomment-search-button" type="submit" value="Search"/>
+				</form>
+			</div>
+
+			<div id="ucomment-local-toc">
+				{{ local_TOC|safe }}
+			</div>
+
+			<div id="ucomment-sidebar-content">
+				{{ sidebar_html|safe }}
+			</div>
+
+		</div><!--#ucomment-content-related-->
+	</div> <!--#comment-contentwrap-->
+
+	<div id="ucomment-navigation-bottom" class="ucomment-navigation">
+		<div class="ucomment-show-hide-ucomments" style="display: none;">Hide comments<!--THIS WILL BE REPLACED BY JAVASCRIPT--></div>
+		<div class="ucomment-nav-links">{{ nav_links|safe }}</div>
+	</div> <!--#ucomment-navigation-bottom-->
+
+	<div id="ucomment-footer">
+	</div><!--#ucomment-footer-->
+
+	<!-- These HTML elements are used to provide the comment dialog box and floater -->
+	<!-- Used to highlight the paragraph being commented on -->
+	<div id="ucomment-highlight-floater"></div>
+
+	<div id="ucomment-dialog-container" class="yui3-skin-sam">
+
+		<div id="ucomment-dialog-header">
+			Contribute your comments (<em>this window can be dragged out of the way</em>)<span class="ucomment-close">X</span>
+
+		</div>
+		<div id="ucomment-dialog">
+			<ul>
+				<li><a href="#post-comments">Add a new comment</a></li>
+				<li><a href="#view-comments">View existing comments</a></li>
+				<li><a href="#help-comments">Help with commenting</a></li>
+			</ul>
+
+			<div id="ucomment-content">
+				<!-- Put the HTML content for each tab here; in the same order as the above li's -->
+				<div id="ucomment-post-comments" class="ucomment-tab">
+					<form action="no/address/required/uses/XHR" id="ucomment-form">
+					<p>
+						<label for="id_name">Your name, used to give attribution to you (optional)</label>
+						<input type="text" name="name" id="ucomment-id_name" tabindex="1" placeholder="Your name (optional)" value=""/>
+					</p>
+					<p>
+						<label for="id_email">Your e-mail address (optional; will never be displayed) </label>
+						<input type="email" name="email" id="ucomment-id_email" value="" tabindex="2" placeholder="Your email address (optional)"/>
+					</p>
+					<p>
+						<label for="id_updates">Receive <a href="/stay-connected" target="_blank">updates from us</a> (no more than 3 per year)? </label>
+						<input type="checkbox" name="updates" id="ucomment-id_updates" value="get_updates" tabindex="3"/>
+					</p>
+					<p>
+						<label for="id_comment">Your comment on the highlighted region:</label> (Please read the <span id="ucomment-help-with-ucomments"><a href="#help-comments">help on commenting</a></span>)
+						<textarea name="comment" id="ucomment-id_comment" tabindex="4" cols="35" rows="20" placeholder="Type your comment related to the highlighted region ..."></textarea>
+					</p>
+					<p>
+						<label for="id_comment_preview">Comment preview:</label>
+						<div name="comment-preview-box" id="ucomment-preview-box"></div> <!-- May not have a class!  Javascript manipulates its class -->
+					</p>
+					</form><!--#ucomment-form-->
+				</div> <!--#ucomment-post-comments-->
+				<div id="ucomment-view-comments" class="ucomment-tab">
+					<div id="ucomment-view-comments-list"> <!-- These will be pulled in from the database, on request --> </div>
+					<div id="ucomment-post-a-new-comment">Want to add to the discussion? <a href="#post-comments">Please click here</a>.</div>
+				</div>
+
+				<div id="ucomment-help-comments" class="ucomment-tab">
+					<h4>About this comment system</h4>
+					<ol>
+					<li> You are commenting on the highlighted paragraph.</li>
+					<li> Comments will first be approved, so there will be a short delay before they appear on the website.</li>
+					<li> After 3 comments have been approved from your email address, your future comments will appear right away, without approval.  This is an incentive to provide your email address, though it is definitely not required to participate with comments.</li>
+					<li> We reserve the right to edit or remove a comment.</li>
+					<li> Submitted comments allow you to provide feedback, give help to others, or ask questions.</li>
+					</ol>
+				</div>
+			</div> <!--#ucomment-content-->
+		</div> <!--#ucomment-dialog-->
+		<div id="ucomment-dialog-footer">
+			<input id="ucomment-preview-button" class="ucomment-buttons" type="button" value="Preview your comment" tabindex="5"/>
+			<input id="ucomment-submit-button" class="ucomment-buttons" type="button" value="Submit your comment" tabindex="6"/>
+			<input id="ucomment-close-button" class="ucomment-buttons ucomment-close" type="button" value="Close" tabindex="7"/>
+		</div>
+	</div> <!--#ucomment-dialog-container-->
+
+</div> <!--#ucomment-document-container-->
+
+
+
+{{ suffix_html|safe }}  <!-- HTML included from conf/settings.py file -->
+
+</body>
+</html>

@@ -1,0 +1,564 @@
+/* -------------------------------------------------------------------------*/
+/* Basic layout of the document: no styling - that is applied further down. */
+/* -------------------------------------------------------------------------*/
+#ucomment-document-container{
+	position: relative;
+	min-width: 50em;
+	max-width: 90em;
+}
+#ucomment-header{
+	height: 3em;
+}
+
+.ucomment-navigation{
+    /* Navigation blocks: top and bottom */
+	display: block;
+}
+
+#ucomment-navigation-top{
+	clear: both;
+}
+
+#ucomment-contentwrap{
+	display: block;
+}
+#ucomment-content-main{
+	float: left;
+	width: 70%;
+}
+#ucomment-content-related{
+	width: 30%;
+	float: right;
+}
+#ucomment-navigation-bottom{
+	clear: both;
+}
+#ucomment-footer{
+	clear: both;
+}
+#ucomment-highlight-floater{
+	display: none;
+}
+
+/* -------------------------------------------- */
+/* Now we will begin styling the various blocks */
+/* -------------------------------------------- */
+
+/* Document container */
+#ucomment-document-container {
+    font: 13px/1.5 'Lucida Grande','Lucida Sans Unicode','Geneva','Verdana',sans-serif;
+    background: #FFFFFF;
+	margin: auto;              /* display container in the center of the page */
+	padding-top: 12px;
+}
+#ucomment-document-container img{
+    border: 0
+}
+
+/* Header block */
+#ucomment-header h1 a {
+	color: black;
+	text-decoration: none;
+}
+
+/* Navigation blocks: top and bottom */
+.ucomment-navigation{
+	color: #EE9816;
+	border-top: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
+	height: 2em;
+	background-image: url(navigation.png); /* Styling from the Sphinx website!*/
+}
+.ucomment-navigation a{
+	text-decoration: none;
+	color: #EE9816;
+	padding-left: 9px;
+	font-size: 110%;
+}
+
+.ucomment-show-hide-ucomments{
+    float: left;
+	width: 50%;
+}
+.ucomment-nav-links{
+	position: absolute;
+	right: 0px;
+}
+
+/* contentwrap block: applies to everything in the bulk of the page */
+#ucomment-contentwrap {
+}
+
+/* The major chunk of content (left side); the sidebar comes later */
+#ucomment-content-main{
+	background: #20435C;
+}
+
+/* ucomment-border: the 20px margin creates the click elements for the ucomments */
+#ucomment-border {
+	margin-left: 20px;	  /* Only use "px": used in Javascript calculations */
+	background: white;
+	color: black;
+    padding-top: 1em;     /* Don't remove top and bottom padding: leads to    */
+    padding-bottom: 2em;  /* unwanted horizontal borders around the document. */
+	padding-left: 2em;
+	padding-right: 2em;
+
+}
+
+/* ucomment-section-body: the current section of the document.  The Sphinx
+   generated HTML is inserted inside this DIV element.  Specific formatting for
+   the HTML should go here */
+/* ----------------------- */
+#ucomment-section-body {
+}
+
+/* Styling for the headers */
+div#ucomment-section-body h1, h2, h3, h4, h5, h6{
+	color: #20435C;
+	font-family: 'Trebuchet MS', sans-serif;
+    font-weight: normal;
+    border-bottom: 1px solid #ccc;}
+div#ucomment-section-body h1 {	margin-top: 0;	font-size: 200%; font-weight: bold;}
+div#ucomment-section-body h2 { font-size: 160%; font-weight: bold; color: #101074;}
+div#ucomment-section-body h3 { font-size: 140%; color: #362A13;}
+div#ucomment-section-body h4 { font-size: 120%; }
+div#ucomment-section-body h5 { font-size: 110%; }
+div#ucomment-section-body h6 { font-size: 100%; }
+
+/* Styling for ``rubric`` nodes: treat them like an h6 heading */
+div#ucomment-section-body .rubric{
+	color: #20435C;
+	font-family: 'Trebuchet MS', sans-serif;
+    font-weight: normal;
+    border-bottom: 1px solid #ccc;}
+
+/* Styling for hyperlinks */
+div#ucomment-section-body a{
+	text-decoration: underline;
+	color: #EE9816;
+}
+
+/* Styling for images and figures: images are inline, figures are centered */
+div#ucomment-section-body .align-center{
+    text-align: center;
+}
+
+/* Styling for equation and numbers */
+span.eqno{
+	float: right;
+}
+
+/* Styling for the tables */
+div#ucomment-section-body table.docutils {
+    border: 1px #AAAAAA solid;
+	margin: 1em 1em 1em 1em;
+	border-collapse: collapse;
+	empty-cells: show;
+	background-color: transparent;}
+div#ucomment-section-body table p{
+	margin: 0px;}  /* Table entries are <p> elements; reduce the space around them */
+div#ucomment-section-body table.docutils td {
+	padding: 0.2em 0.4em;}
+div#ucomment-section-body table.docutils th {
+    padding: 0.2em 0.4em;
+	background-color: #8DA7D6;}
+div#ucomment-section-body table th p {
+  text-align: center;}
+div#ucomment-section-body table tr:hover {
+	background-color: #FFFFCC;}
+
+
+/* Styling for the source code listings: (from pygments.css)*/
+div#ucomment-section-body pre{
+    overflow: auto;
+    padding: 5px;
+    background-color: #ffffee;
+    color: #333333;
+    line-height: 120%;
+    border: 1px solid #ac9;
+    border-left: none;
+    border-right: none;
+}
+
+div#ucomment-section-body td.linenos pre {
+    padding: 5px 0px;
+    border: 0;
+    background-color: transparent;
+    color: #aaa;
+}
+
+div#ucomment-section-body .highlight .hll { background-color: #ffffcc }
+div#ucomment-section-body .highlight .c { color: #008800; font-style: italic } /* Comment */
+div#ucomment-section-body .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+div#ucomment-section-body .highlight .k { color: #000080; font-weight: bold } /* Keyword */
+div#ucomment-section-body .highlight .cm { color: #008800; font-style: italic } /* Comment.Multiline */
+div#ucomment-section-body .highlight .cp { color: #008080 } /* Comment.Preproc */
+div#ucomment-section-body .highlight .c1 { color: #008800; font-style: italic } /* Comment.Single */
+div#ucomment-section-body .highlight .cs { color: #008800; font-weight: bold } /* Comment.Special */
+div#ucomment-section-body .highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+div#ucomment-section-body .highlight .ge { font-style: italic } /* Generic.Emph */
+div#ucomment-section-body .highlight .gr { color: #aa0000 } /* Generic.Error */
+div#ucomment-section-body .highlight .gh { color: #999999 } /* Generic.Heading */
+div#ucomment-section-body .highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+div#ucomment-section-body .highlight .go { color: #888888 } /* Generic.Output */
+div#ucomment-section-body .highlight .gp { color: #555555 } /* Generic.Prompt */
+div#ucomment-section-body .highlight .gs { font-weight: bold } /* Generic.Strong */
+div#ucomment-section-body .highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+div#ucomment-section-body .highlight .gt { color: #aa0000 } /* Generic.Traceback */
+div#ucomment-section-body .highlight .kc { color: #000080; font-weight: bold } /* Keyword.Constant */
+div#ucomment-section-body .highlight .kd { color: #000080; font-weight: bold } /* Keyword.Declaration */
+div#ucomment-section-body .highlight .kn { color: #000080; font-weight: bold } /* Keyword.Namespace */
+div#ucomment-section-body .highlight .kp { color: #000080; font-weight: bold } /* Keyword.Pseudo */
+div#ucomment-section-body .highlight .kr { color: #000080; font-weight: bold } /* Keyword.Reserved */
+div#ucomment-section-body .highlight .kt { color: #000080; font-weight: bold } /* Keyword.Type */
+div#ucomment-section-body .highlight .m { color: #0000FF } /* Literal.Number */
+div#ucomment-section-body .highlight .s { color: #0000FF } /* Literal.String */
+div#ucomment-section-body .highlight .na { color: #FF0000 } /* Name.Attribute */
+div#ucomment-section-body .highlight .nt { color: #000080; font-weight: bold } /* Name.Tag */
+div#ucomment-section-body .highlight .ow { font-weight: bold } /* Operator.Word */
+div#ucomment-section-body .highlight .w { color: #bbbbbb } /* Text.Whitespace */
+div#ucomment-section-body .highlight .mf { color: #0000FF } /* Literal.Number.Float */
+div#ucomment-section-body .highlight .mh { color: #0000FF } /* Literal.Number.Hex */
+div#ucomment-section-body .highlight .mi { color: #0000FF } /* Literal.Number.Integer */
+div#ucomment-section-body .highlight .mo { color: #0000FF } /* Literal.Number.Oct */
+div#ucomment-section-body .highlight .sb { color: #0000FF } /* Literal.String.Backtick */
+div#ucomment-section-body .highlight .sc { color: #800080 } /* Literal.String.Char */
+div#ucomment-section-body .highlight .sd { color: #0000FF } /* Literal.String.Doc */
+div#ucomment-section-body .highlight .s2 { color: #0000FF } /* Literal.String.Double */
+div#ucomment-section-body .highlight .se { color: #0000FF } /* Literal.String.Escape */
+div#ucomment-section-body .highlight .sh { color: #0000FF } /* Literal.String.Heredoc */
+div#ucomment-section-body .highlight .si { color: #0000FF } /* Literal.String.Interpol */
+div#ucomment-section-body .highlight .sx { color: #0000FF } /* Literal.String.Other */
+div#ucomment-section-body .highlight .sr { color: #0000FF } /* Literal.String.Regex */
+div#ucomment-section-body .highlight .s1 { color: #0000FF } /* Literal.String.Single */
+div#ucomment-section-body .highlight .ss { color: #0000FF } /* Literal.String.Symbol */
+div#ucomment-section-body .highlight .il { color: #0000FF } /* Literal.Number.Integer.Long */
+
+
+
+/* Styling for admonitions and notes : taken from Sphinx (sphinxdoc.css) */
+div#ucomment-section-body div.admonition {
+	font-size: 0.9em;
+    margin: 1em 0 1em 0;
+    border: 1px solid #86989B;
+    background-color: #f7f7f7;
+    padding: 0;	}
+div#ucomment-section-body div.admonition dt {
+    font-weight: bold;}
+div#ucomment-section-bodydiv.admonition dl {
+    margin-bottom: 0;}
+div#ucomment-section-body div.admonition p.admonition-title {
+    margin: 0;
+    padding: 0.1em 0 0.1em 0.5em;
+    color: white;
+    border-bottom: 1px solid #86989B;
+    font-weight: bold;
+    background-color: #AFC1C4;}
+div#ucomment-section-body div.admonition p {
+    margin: 0.5em 1em 0.5em 1em;
+    padding: 0;}
+div#ucomment-section-body div.admonition pre{
+    margin: 0.4em 1em 0.4em 1em;}
+
+/* Sidebars in Sphinx/docutils */
+div#ucomment-section-body div.sidebar  {
+    border:2px solid #DDDDBB;
+    float:right;
+    margin:0 0 0.5em 1em;
+    padding:7px 7px 0;
+    width:40%;
+}
+
+div#ucomment-section-body .sidebar-title{
+    margin: 0px 10px 5px 0px;
+    font-weight: bold;
+}
+
+
+/* ----------------------- */
+
+
+/* SIDEBAR: "#ucomment-content-related" this is the sidebar. */
+#ucomment-content-related{
+}
+
+/* SIDEBAR: "#ucomment-search-box-region"  */
+#ucomment-search-box-region{
+	padding-top:25px;
+
+}
+#ucomment-search-box{
+	float: left;
+	width: 70%;
+}
+#ucomment-search-button{
+	float: right;
+	width: 25%;
+}
+
+/* SIDEBAR: "#ucomment-local-toc" */
+#ucomment-local-toc{
+	padding-top: 25px;
+	line-height: 2;
+	font-size:90%;
+}
+#ucomment-local-toc li{
+	padding-left: 0px;
+	list-style-type: circle;
+}
+#ucomment-local-toc li ul li{
+	margin-left: 15px;
+	list-style-type: square;
+}
+
+/* The navigation elements appear at the top and bottom of the document, so
+   they use CSS classes, rather than ID's.  Adjust this bottom navigation ID
+   if you want different styling for the bottom nav region.
+*/
+#ucomment-navigation-bottom{
+/*  display: none;  to hide the bottom navigation region*/
+}
+
+/* ucomment-footer */
+#ucomment-footer {
+    color:#487858;
+    font-size:90%;
+    padding-bottom: 2em;
+}
+
+/* ucomment-highlight-floater: the highlighter indicates the paragraph being commented */
+#ucomment-highlight-floater{
+    position: absolute;
+    z-index: 50;
+    background: #20435C; /* (#487858) */
+    top:  0px;
+    left: 0px;
+    width:100%;
+    height: 10px;        /* will be adjusted by Javascript */
+    visibility: hidden;
+    border-top: 1px black solid;
+    border-bottom: 1px black solid;
+    border-left: 20px black solid;  /* must correspond to the margin width */
+}
+
+
+/* #ucomment-dialog-container: this is the pop-up dialog box.
+   There is specific styling for the HTML elements within this container, so
+   this CSS section is quite long.
+
+   There are 3 sub divisions within this container also:
+
+   1. ucomment-dialog-header
+   2. ucomment-dialog
+   3. ucomment-dialog-footer
+
+--------------------------------: START OF #ucomment-dialog-container styling */
+#ucomment-dialog-container{
+    padding: 0;
+    border: 1px #092e20 solid;
+    top:0;
+    position: absolute;
+    z-index: 200;
+    background-color: #20435C;
+    width:  550px;               /* Please only specify this in units of "px" */
+    height: 550px;  /* Only in "px": both are used in Javascript calculations */
+				    /* Also adjust the height of `.yui3-tabview-panel`        */
+    color: black;
+    overflow: hidden;
+    display: none;
+    text-align: left;
+}
+
+#ucomment-dialog-container div.ucomment-tab ol {
+    padding: 0;
+    margin: 0;
+    font-size: 100%; }
+#ucomment-dialog-container div.ucomment-tab dl { margin-bottom: 0; }
+#ucomment-dialog-container div.ucomment-tab li
+{
+    /*border-bottom: 1px #E0FFB8 solid;*/
+    /*list-style: none;*/
+}
+#ucomment-dialog-container .yui3-tabview-panel {
+    font-size: 90%;
+    background-color: white;
+    border: 1px #999 solid;
+    border-top: none;
+    height: 435px;
+    overflow: auto;
+    padding: 1em;
+}
+#ucomment-dialog-container div.ucomment-tab input { width: 100%; }
+#ucomment-dialog-container div.ucomment-tab input#id_updates { width: auto; }
+#ucomment-dialog-container div.ucomment-tab input#comment-preview-button{ width: auto; }
+#ucomment-dialog-container div.ucomment-tab label {
+    font-weight: bold;
+    color: #487858;
+}
+#ucomment-dialog-container div.ucomment-tab label#id_updates {
+    font-weight: bold;
+    color: #487858;
+}
+#ucomment-dialog-container div.ucomment-tab textarea {
+    width: 100%;
+    height: 100px;
+}
+#ucomment-dialog-container div.ucomment-tab p { margin-bottom: 0; }
+
+#ucomment-dialog-container div.ucomment-tab li span.ucomment-meta {
+    /* styling the information about each comment */
+    font-weight: normal;
+    color:       #487858;
+    font-size:   90%;
+    right:       15px;
+    position:    absolute;
+}
+#ucomment-dialog-container div.ucomment-tab a:hover{
+    background-color: #FFFFFE;
+    color:#234f32;
+    text-decoration:none;
+}
+#ucomment-dialog-container div.ucomment-tab a:link,
+#comments-dialog-container div.ucomment-tab a:visited { color:#ab5603; }
+
+
+#ucomment-preview-box{
+    width: 100%;
+}
+
+.ucomment-error {color: red;}
+
+#ucomment-view-comments-list li{
+    list-style: none;
+}
+
+#ucomment-view-comments-list dt{
+    /* Adds dark green line between each comment, after the author's name */
+    border-bottom: 1px #406b4e solid;
+}
+
+#ucomment-post-a-new-comment {
+    border-top: 2px #406b4e solid;
+    margin-top: 2em;
+}
+
+#ucomment-author {
+    font-weight: bold;
+}
+
+/* Floating indicator that appear in the left margin.  The left-edge pixel
+   location is set in the Javascript file: it is usually -44px though.*/
+span.ucomment-indicator {
+    position: absolute;
+    width: 20px;
+    z-index: 100;
+    text-align: center;
+    color: black;
+    font-size: 11px;
+    font-weight: normal;
+    left: -44px;
+    top: 0; }
+
+span.ucomment-indicator:hover {
+    /* Colour when hovering mouse in comment margin*/
+    background-color: #4080BB;
+}
+span.ucomment-indicator span {
+    position: absolute;
+    top: -10px;
+    width: 25px;
+    height: 25px;
+    left: -10px;
+}
+span.ucomment-indicator:hover span{
+    background-image: url(add-comment.png);
+}
+span.ucomment-has-comments > span,
+span.ucomment-has-comments:hover > span {
+    background-image: url(existing-comment.png);
+}
+
+/*--------------------------------END OF #ucomment-dialog-container styling*/
+
+/* Comment dialog: header */
+#ucomment-dialog-header{
+    background-color: #3E3E3E;
+    color: white;
+    padding: 2px 4px;
+    font-weight: bold;
+    margin: 0 0 6px 0;
+    position: relative;
+	font-size:90%;
+}
+/* The close "X" button and the "Close" HTML button classes within the header */
+#ucomment-dialog-header .ucomment-close {
+    position: absolute;
+    top: 5px;
+    right: 4px;
+    height: 12px;
+    width: 19px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-indent:-999px;
+    background: url(close-button.png) no-repeat top left;
+}
+
+/* Comment dialog: main body */
+#comment-dialog {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+/* Comment dialog: footer */
+#ucomment-dialog-footer{
+    height:   50px;
+    overflow: hidden;
+    padding:  6px;
+}
+
+/* Buttons that appear in the footer region */
+#ucomment-close-button{ position: absolute; right: 4px;}
+#ucomment-submit-button{ position: absolute; right: 4px}
+
+
+/* ---------------------- */
+/* Miscellaneous elements */
+/* ---------------------- */
+#ucomment-toc-referrer{
+    color: red;
+	font-size: 1.3em;
+}
+div#ucomment-section-body .ucomment-toc-expander {
+	margin-left: 10px;
+	text-decoration: none;
+	color: #349816;
+}
+.toctree-wrapper li{
+	list-style-type: none; /* Small glitch with the ucomment-expander */
+}
+.ucomment-expander li {
+	list-style-type: square; /* Small glitch with the ucomment-expander */
+}
+.ucomment-expander li li {
+	list-style-type: circle; /* Small glitch with the ucomment-expander */
+}
+
+
+/* Highlights the search terms within the search results page*/
+#ucomment-search-term{
+	color: red;
+	font-weight: bold;
+}
+#ucomment-search-results li{
+	padding-bottom: 1em;
+}
+#ucomment-search-count{
+	color: purple;
+}
+
+/* Highlights any words within a page*/
+#ucomment-highlight-word{
+	background-color: #FBE54E;
+}

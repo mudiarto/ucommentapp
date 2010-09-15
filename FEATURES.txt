@@ -1,0 +1,59 @@
+* Comments are written in reStructuredText (allows for math, 
+  bullet points, tables, etc), and must be previewed by the 
+  reader before being submitted.  A future feature enhancement
+  will allow for real-time comment preview, using Ajax.
+
+* Email alerts are sent to the site administrator if any
+  errors occurs.
+
+* All comments can be approved first by a comment administrator.
+  An email is sent to the administrator to either approve or
+  reject the comment, with a single click on a URL.
+
+* The settings for comment acceptance are flexible.  For example,
+  the default settings will auto-approve future comments from a
+  poster who has submitted 3 or more approved comments in the past.
+
+* Any comments can always be removed from the document's web 
+  output by marking a checkbox in the Django admin site.
+
+* Comments can be moved to other parts of the document simply
+  by editing the RST source file and republishing the document.
+
+* Long table of contents entries are shrunk and expanded using
+  Javascript.  See http://pid.connectmv.com for an example.
+
+* When the user navigated back to the table of contents they 
+  are shown the page they came from; to help navigate large
+  documents.
+
+* Long chapters or sections in the document can be optionally 
+  split into smaller subsections that each appear on their own 
+  HTML page.
+
+* Supports mathematics and comments on equations: MathJax and 
+  pngmath extensions have been tested.
+
+* Built-in search that takes places on the server's side.
+
+* Search is accessible via a URL: 
+  http://example.com/docs/-search/search Term/AND/case=False
+  will perform a case-insensitive search for the word "search"
+  and "term".  The ``AND`` can be replaced with ``OR``.
+
+* The search function can easily be replaced by Sphinx's 
+  user-side Javascript search, or with other server side
+  search solutions (http://haystacksearch.org/,
+  Whoosh, and others.)
+
+* Most of the web-output is templated, allowing for easy 
+  customization. Templated items include:
+
+  * The main content area
+  * Sidebar containing the search box and the local ToC
+  * Page navigation elements
+  * Emails sent to users and the site administrators
+
+* Basic tracking of page hits (visits) and page popularity
+  can be seen in the customized Django admin interface.
+  (see code in the application's ``admin.py`` file).

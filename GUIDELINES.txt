@@ -1,0 +1,30 @@
+* Always start tables with the table directive
+
+  NOT ADVISED
+  -----------
+
+  The HTML output will look OK, but the ucomment will
+  not be added to the correct location.
+
+  .. tabularcolumns:: |l|lllllllll|
+
+  ==========   === === === === === === === === ===
+  **Case A**   254 440 501 368 697 476 188 525
+  ----------   --- --- --- --- --- --- --- --- ---
+  **Case B**   338 470 558 426 733 539 240 628 517
+  ==========   === === === === === === === === ===
+  
+
+  REQUIRED
+  --------
+
+  .. tabularcolumns:: |l|lllllllll|
+
+  .. table::
+
+	==========   === === === === === === === === ===
+	**Case A**   254 440 501 368 697 476 188 525
+	----------   --- --- --- --- --- --- --- --- ---
+	**Case B**   338 470 558 426 733 539 240 628 517
+	==========   === === === === === === === === ===
+
