@@ -52,6 +52,7 @@ repo_DVCS_type = 'hg'
 # authentication information in the .hg/hgrc file to allow automatic pushing
 # back to this remote repo.
 remote_repo_URL = r'http://hg.connectmv.com/document-test/'
+remote_repo_URL = r'http://hg.connectmv.com/book-source/'
 
 # This is the local repository of the document. It is a clone of the full
 # document's source, with all revisions.  It is also the location where the RST

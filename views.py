@@ -1603,8 +1603,7 @@ def call_sphinx_to_publish():
 
     # Copy over the ucomment extension to the local repo: that way the author
     # does not have to include it in his/her repo of the document.
-    srcdir = os.path.join(os.getcwd(), conf.app_dirname,
-                          'sphinx-extensions') + os.sep
+    srcdir = os.path.join(conf.application_path, 'sphinx-extensions') + os.sep
     if os.name == 'posix':
         try:
             os.symlink(srcdir + 'ucomment-extension.py',
@@ -1622,7 +1621,8 @@ def call_sphinx_to_publish():
             shutil.copy(srcdir + 'ucomment-extension.py',
                     conf.local_repo_physical_dir)
         except shutil.Error:
-            pass
+            UcommentError(err, ('When copying the ucomment extension - not '
+                                'found'))
 
     # When Sphinx is called to compile the document, it is expected that the
     # document's ``conf.py`` has the correct path to the extensions.

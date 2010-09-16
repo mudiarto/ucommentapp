@@ -159,7 +159,6 @@ def pull_update_and_merge(local, remote):
     try:
         # hg pull -u, hg merge, hg commit
         local_repo = get_hg_repo(local)
-        remote_repo = get_hg_repo(remote)
 
         # Pull in all changes from the remote repo
         result_pull = commands.pull(ui_obj, local_repo,
@@ -170,6 +169,7 @@ def pull_update_and_merge(local, remote):
         commands.update(ui_obj, local_repo)
 
         # Anything to merge?
+        remote_repo = get_hg_repo(remote)
         new_heads = local_repo.pull(remote_repo)
 
         # Merge any changes:
