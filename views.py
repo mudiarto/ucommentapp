@@ -1422,8 +1422,8 @@ def display_page(page_requested):
                                                       toc_page[0].link_name]))
             else:
                 emsg = ('A master page does not exist in the ucomment database.'
-                        '<p>Have you correctly specified the settings in '
-                        '``<pre>%sconf/settings.py</pre>``?'
+                        '<p>Have you correctly specified the settings in this '
+                        'file? <pre>%sconf/settings.py</pre>'
                         '<p>Also visit <a href="%s">the administration page</a>'
                         ' to start compiling your document.' % (
                                        conf.application_path,
