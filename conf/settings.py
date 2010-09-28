@@ -12,7 +12,7 @@ del DJANGO_SETTINGS  # Leads to recursion depth errors when unpickling by Sphinx
 
 # Application settings (do not edit these two settings)
 # --------------------
-application_path = __file__[0:__file__.find('conf/settings.py')]
+application_path = __file__[0:__file__.find('conf' + sep + 'settings.py')]
 app_dirname = application_path.split(sep)[-2]
 
 # Comment settings
@@ -121,23 +121,23 @@ html_navigation_template = '''\
 {{% if prev  %}}
    <a href="{{{{ prev.link }}}}" title="Back to: {{{{ prev.title }}}}"
    accesskey="p">
-   <!--<img alt="Back: {{{{ prev.title }}}}" src="{media_url}/prev-button.png"/>-->
+   <!--<img alt="Back: {{{{ prev.title }}}}" src="{media_url}prev-button.png"/>-->
    previous</a> <!--|-->
 {{% endif %}}
 {{% if parent %}}
    <a href="{{{{ parent.link }}}}" title="Up one section: {{{{ parent.title }}}}"
    accesskey="u">
-   <!--<img alt="Up: {{{{ parent.title }}}}" src="{media_url}/up-button.png"/>-->
+   <!--<img alt="Up: {{{{ parent.title }}}}" src="{media_url}up-button.png"/>-->
    up one section</a> <!--|-->
    <a href="{{{{ home.link }}}}" title="Home: {{{{home.title}}}}" accesskey="h">
-   <!--<img alt="Home: {{{{home.title}}}}" src="{media_url}/TOC-button.png"/>-->
+   <!--<img alt="Home: {{{{home.title}}}}" src="{media_url}TOC-button.png"/>-->
    contents</a>
    {{% if next %}} <!--|--> {{% endif %}}
 {{% endif %}}
 {{% if next %}}
    <a href="{{{{next.link}}}}" title="Step ahead to: {{{{ next.title }}}}"
    accesskey="n">
-   <!--<img alt="Step ahead to: {{{{ next.title }}}}" src="{media_url}/next-button.png"/>-->
+   <!--<img alt="Step ahead to: {{{{ next.title }}}}" src="{media_url}next-button.png"/>-->
    next</a>
 {{% endif %}}'''.format(media_url=MEDIA_URL)
 
@@ -360,3 +360,13 @@ Original RST for their comment:
 Click this link to ACCEPT the comment: {{comment.approval_code}}
 To REJECT the comment, click here: {{comment.rejection_code}}
 '''
+
+# Create a ``local_settings.py`` file that overrides settings in this file.
+# This is useful if you update ucommentapp from revision control and don't want
+# to loose your settings everytime.  Be sure to check for diffs against
+# this file (conf/settings.py).
+try:
+    this_dir = __file__[0:__file__.find('settings.py')]
+    execfile(this_dir + sep + 'local_settings.py')
+except IOError:
+    pass
