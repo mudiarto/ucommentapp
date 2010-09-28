@@ -61,5 +61,5 @@ if settings.DEBUG:
         # For example, files under _images/file.jpg will be retrieved from
         # settings.MEDIA_ROOT/file.jpg
         (r'^_images/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': views.conf.physical_media_dir, 'show_indexes': True}),
+         {'document_root': views.conf.MEDIA_ROOT, 'show_indexes': True}),
         )

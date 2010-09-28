@@ -96,8 +96,8 @@ Installing the ucomment Django application
 	* ucommentapp/media/ucomment.css
 	* ucommentapp/media/*.png
 
-	to the direcotry you specified as "physical_media_dir"
-	in the  "ucommentapp/conf/settings.py" file.
+	to the MEDIA_ROOT directory you specified in your
+	Django "settings.py" file for your project.
 
 * Settings inside Javascript
 * Settings for CSS
