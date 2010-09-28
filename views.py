@@ -808,7 +808,7 @@ def commit_comment_to_sources(reference, node, func, additional=None):
         rev_num, hex_str = commit_to_repo_and_push(commit_message)
         log_file.debug(commit_message)
         return str(rev_num) + ':' + hex_str, c_root
-    except UcommentError as err:
+    except (UcommentError, dvcs.DVCSError) as err:
         UcommentError(err)
         return False, False
 

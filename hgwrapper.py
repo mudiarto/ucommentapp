@@ -1,10 +1,8 @@
 """
 Wraps the standard DVCS commands: for mercurial.
 """
-from mercurial import ui, hg, commands, cmdutil, util, url, error
-from mercurial.node import nullid, short
-from mercurial.i18n import _
-from mercurial.lock import release
+from mercurial import ui, hg, commands, error
+from mercurial.node import short
 
 ui_obj = ui.ui()
 ui_obj.quiet = True
@@ -46,8 +44,8 @@ def init(dest):
 
     This function is not required in ucomment; it is only used for unit-testing.
     """
-    out = commands.init(ui_obj, dest)
-    if out != None and out != 0:
+    res = commands.init(ui_obj, dest)
+    if res != None and res != 0:
         raise DVCSError('Could not initialize the repository at %s' % dest)
 
 
@@ -111,14 +109,11 @@ def commit_and_push_updates(message, local, remote, update_remote=False):
     # Then commit the changes
     commands.commit(ui_obj, local_repo, message=message)
 
-    # TODO(KGD): removed the prepush (not available in hg 1.6.2)
-    #            replace it with something else? What was the need for it again?
-    # Push that commit back to the remote repo.  Are we going to create a
-    # remote head with this push?
-    #check = local_repo.prepush(remote_repo, force=False, revs=None)
-    #if check[0] is not None:
-        # No: continue pushing the changes the remote repo
-    local_repo.push(remote_repo)
+    # Try pushing the commit
+    try:
+        local_repo.push(remote_repo)
+    except error.Abort as err:
+        raise DVCSError(err)
     #else:
         ## Yes: pull in any changes first
         ##      then merge these changes
@@ -135,7 +130,7 @@ def commit_and_push_updates(message, local, remote, update_remote=False):
                 #local_repo.push(remote_repo)
             #else:
                 #raise DVCSError(err)
-        ## TODO(KGD): how to get status messages out from merge: want to log them
+        # TODO(KGD): how to get status messages out from merge: want to log them
         #message = 'First pulled and merged due to multiple heads. ' + message
         #commands.commit(ui_obj, local_repo, message=message)
         #local_repo.push(remote_repo)
