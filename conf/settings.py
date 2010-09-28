@@ -71,13 +71,6 @@ local_repo_URL = r'file://' + application_path + '/document_compile_area/'
 # built using the "pickle" builder in Sphinx.
 django_serves_html = True
 
-# Physical location on your server for the media referred to by ``media_url``.
-# Normally you would use DJANGO_SETTINGS.MEDIA_ROOT, i.e. the MEDIA_ROOT setting
-# in your Django project.  However you might want to isolate this application's
-# media in a subdirectory.  Math equations (pngmath) and images & figures are
-# moved from Sphinx's compile location to this media directory for you.
-physical_media_dir = MEDIA_ROOT + 'document/media/'
-
 # Web link to the stylesheet:
 stylesheet_link = MEDIA_URL + 'ucomment.css'
 

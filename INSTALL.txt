@@ -71,14 +71,15 @@ Installing the ucomment Django application
 
 10.	Now you should be ready to publish your document using
 	this Django application.  Start your Django server, or
-	use the built-in development server:
+	if you are in development mode: run the built-in Django
+	development server:
 		./manage.py runserver
 
-11.	Now visit the publish/update page for the application.
-	If you left the default settings in the urls.py file
-	from step 3, then the link will be:
+11.	Visit the publish/update page for the application. The link is
 
-	  http://example.com/document/_publish-update-document/
+	http://example.com/document/_admin
+
+	and click on the link to publish/update the document.
 
 12.	Typically the root page for the document will be at,
 

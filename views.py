@@ -366,7 +366,7 @@ def transfer_html_media(html_body):
     mathdir = ''.join([conf.comment_compile_area, os.sep, '_build', os.sep,
                        'pickle', os.sep, '_images', os.sep, 'math', os.sep])
     ensuredir(mathdir)
-    dst_dir = conf.physical_media_dir + os.sep + 'comments' + os.sep
+    dst_dir = conf.MEDIA_ROOT + 'comments' + os.sep
     ensuredir(dst_dir)
 
     for mathfile in os.listdir(mathdir):
