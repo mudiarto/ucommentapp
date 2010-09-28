@@ -1420,9 +1420,9 @@ def display_page(page_requested):
             toc_page = models.Page.objects.filter(is_toc=True).filter(\
                                                             prev_link=None)
             if toc_page:
-                return HttpResponseRedirect('/'.join(['',
-                                                      conf.url_views_prefix,
-                                                      toc_page[0].link_name]))
+                resp = django_reverse('ucomment-display-page-root') + \
+                                                         toc_page[0].link_name
+                return HttpResponseRedirect(resp)
             else:
                 emsg = ('A master page does not exist in the ucomment database.'
                         '<p>Have you correctly specified the settings in this '
