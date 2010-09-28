@@ -1406,6 +1406,7 @@ def display_page(page_requested):
     Must also handle the case of http://example.com/page#subsection to got
     to subsection links within a page.
     """
+    log_file.debug('REQUEST: page = %s.' % (page_requested.path))                                                      )
     start_time = time.time()
     link_name = convert_web_name_to_link_name(page_requested.path)
 
@@ -1443,7 +1444,7 @@ def display_page(page_requested):
     page.save()
 
     result = render_page_for_web(page, page_requested)
-    log_file.debug('REQUEST: page = %s; rendered in %f secs.' % (link_name,
+    log_file.info('REQUEST: page = %s; rendered in %f secs.' % (link_name,
                                                        time.time()-start_time))
     return result
 
