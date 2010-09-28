@@ -2352,7 +2352,7 @@ def search_document(request, search_terms='', search_type='AND',
     # Create a psuedo-"Page" object containing the search results and return
     # that to the user.  It is infact a named tuple, which has the same
     # behaviour as a ``Page`` object
-    page = namedtuple('Page', ('revision_changeset next_link prev_link '
+    page = namedtuple('Page', ('revision_changeset next_link prev_link sidebar '
                       'parent_link html_title body local_toc link_name is_toc'))
     search_output = page(revision_changeset='',
                          next_link = None,
@@ -2362,6 +2362,7 @@ def search_document(request, search_terms='', search_type='AND',
                          body = web_output,
                          local_toc = '',
                          is_toc = True, # prevents sidebar
+                         sidebar = '',  # but still set it to empty
                          link_name = request.path.lstrip('/' +
                                                         conf.url_views_prefix))
 
