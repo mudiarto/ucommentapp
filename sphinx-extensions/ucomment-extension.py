@@ -940,9 +940,9 @@ def copy_static_content(app, exception):
 
     src = os.path.join(app.builder.outdir, '_images')
     ensuredir(src)
-    ensuredir(conf['physical_media_dir']) # destination
+    ensuredir(conf['MEDIA_ROOT']) # destination
 
-    copy_command = ['cp', '-ru', src+os.sep+'.', conf['physical_media_dir']]
+    copy_command = ['cp', '-ru', src+os.sep+'.', conf['MEDIA_ROOT']]
     try:
         subprocess.check_call(copy_command, stdout=subprocess.PIPE, cwd='.')
     except subprocess.CalledProcessError:

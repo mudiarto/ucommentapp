@@ -159,8 +159,11 @@ def convert_web_name_to_link_name(page_name, prefix=''):
         page_name = page_name.split(prefix)[1]
     if '?' in page_name:
         page_name = page_name.split('?')[0]
-    return page_name.split(os.sep + conf.url_views_prefix + \
+    if conf.url_views_prefix:
+        return page_name.split(os.sep + conf.url_views_prefix + \
                            os.sep)[1].rstrip('/')
+    else:
+        return page_name.split(os.sep)[1].rstrip('/')
 
 
 def get_site_url(request, add_path=True, add_views_prefix=False):
@@ -2390,6 +2393,8 @@ def admin_signin(request):
                 django_reverse('ucomment-dump-fixtures'))
         return HttpResponse(msg, status=200)
     elif request.method == 'GET':
+        log_file.info('Entering the admin section; IP = %s' % \
+                                                (request.META['REMOTE_ADDR']))
         context = {}
         context.update(csrf(request))
         msg = ( '<p>Please sign-in first with your Django (admin) credentials:'
