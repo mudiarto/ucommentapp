@@ -365,8 +365,10 @@ To REJECT the comment, click here: {{comment.rejection_code}}
 # This is useful if you update ucommentapp from revision control and don't want
 # to loose your settings everytime.  Be sure to check for diffs against
 # this file (conf/settings.py).
+this_dir = __file__[0:__file__.find('settings.py')]
 try:
-    this_dir = __file__[0:__file__.find('settings.py')]
     execfile(this_dir + sep + 'local_settings.py')
 except IOError:
     pass
+
+del this_dir, sep, getcwd, mkdtemp

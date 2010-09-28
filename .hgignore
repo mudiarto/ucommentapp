@@ -1,3 +1,4 @@
 .*\.pyc
 comment_compile_area/
 fixtures/
+conf/local_settings.py
