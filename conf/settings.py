@@ -108,7 +108,7 @@ html_prefix_text = """
 
 # These line(s) of text will be placed at the end of the HTML served by Django.
 html_suffix_text = ('<script type="text/javascript" '
-                    'src="http://yui.yahooapis.com/3.1.1/build/yui/'
+                    'src="http://yui.yahooapis.com/3.2.0/build/yui/'
                     'yui-min.js"></script>\n'
                     '<script type="text/javascript" src="%s"></script>\n'
                     '<script type="text/javascript" src="%s"></script>\n'
