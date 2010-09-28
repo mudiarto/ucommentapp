@@ -740,8 +740,7 @@ def commit_to_repo_and_push(commit_message):
     """
     rev_num, hex_str = dvcs.commit_and_push_updates(commit_message,
                                         local = conf.local_repo_URL,
-                                        remote = conf.remote_repo_URL,
-                                        update_remote = conf.update_remote_repo)
+                                        remote = conf.remote_repo_URL)
 
     # Merge failed!  Log it and email the site admin
     if not(rev_num) and not(hex_str):

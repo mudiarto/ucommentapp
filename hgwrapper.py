@@ -90,7 +90,7 @@ def commit(repo, message):
     repo = get_hg_repo(repo)
     commands.commit(ui_obj, repo, message=message)
 
-def commit_and_push_updates(message, local, remote, update_remote=False):
+def commit_and_push_updates(message, local, remote):
     """
     After making changes to file(s), programatically commit them to the
     ``local`` repository, with the given commit ``message``; then push changes
@@ -114,30 +114,6 @@ def commit_and_push_updates(message, local, remote, update_remote=False):
         local_repo.push(remote_repo)
     except error.Abort as err:
         raise DVCSError(err)
-    #else:
-        ## Yes: pull in any changes first
-        ##      then merge these changes
-        ##      make the intended commit
-        ##      finally, push back the new changes
-        #local_repo.pull(remote_repo)
-
-        ## The above check raises a false positive only if the repo
-        ## being merged is the current repo.
-        #try:
-            #commands.merge(ui_obj, local_repo, node=None)
-        #except error.Abort as err:
-            #if str(err) == 'there is nothing to merge':
-                #local_repo.push(remote_repo)
-            #else:
-                #raise DVCSError(err)
-        # TODO(KGD): how to get status messages out from merge: want to log them
-        #message = 'First pulled and merged due to multiple heads. ' + message
-        #commands.commit(ui_obj, local_repo, message=message)
-        #local_repo.push(remote_repo)
-
-    # Then update the remote repo (optional)
-    if update_remote:
-        commands.update(ui_obj, remote_repo)
 
     return get_revision_info(local_repo)
 
