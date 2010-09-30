@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # as long as the page name does not start with an underscore.
     url(r'^[^_]{1}[\w"$-_.+!*(),\']*?/$', views.display_page,
                                                   name='ucomment-display-page'),
-    url(r'^$', views.display_page, name='ucomment-display-page-root'),
+    url(r'^$', views.display_page, name='ucomment-root'),
 
     # --------------------------------------------------------------------------
     # NOTE: all other URL's that start with underscores perform functions

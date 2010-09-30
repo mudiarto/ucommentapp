@@ -157,6 +157,7 @@ side_bar_local_toc_template = '''
 # and that this application was stored in the directory called "ucomment".
 #
 # Then assuming you have added this line to the Django PROJECT's ``urls.py``:
+#                                                      ---------
 #     (r'^document/', include('ucomment.urls')),
 #
 # then users access your document at: http://example.com/ucomment-app/document/
@@ -165,7 +166,9 @@ side_bar_local_toc_template = '''
 #
 
 # When the ucomment application receives this URL, it must strip out the
-# ``document`` part.  We call this this ``url_views_prefix``
+# ``document`` part.  We call this this ``url_views_prefix``.  Do not add any
+# leading or trailing slash.  If you mount the application at the server's
+# root, then set this to the empty string, ''.
 url_views_prefix = 'document'
 
 # Full path to where you would like the fixtures (back-ups) written to:

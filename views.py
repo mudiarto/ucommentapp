@@ -184,7 +184,10 @@ def get_site_url(request, add_path=True, add_views_prefix=False):
     if add_path:
         out += request.path
     if add_views_prefix:
-        out += '/' + conf.url_views_prefix + '/'
+        if conf.url_views_prefix:
+            out += '/' + conf.url_views_prefix + '/'
+        else:
+            out = '/'
     return out
 
 # Comment preview and submission functions
@@ -1196,7 +1199,7 @@ def email_poster_rejected(poster, extra_info=''):
     Sends the poster an email saying their comment was not suitable.  If any
     extra text is provided in ``extra_info``, add that to the email.
     """
-    # TODO(KGD): add function
+    # TODO(KGD): add function to reject posting
     pass
 
 def alert_system_admin(error_msg):
@@ -1420,8 +1423,7 @@ def display_page(page_requested):
             toc_page = models.Page.objects.filter(is_toc=True).filter(\
                                                             prev_link=None)
             if toc_page:
-                resp = django_reverse('ucomment-display-page-root') + \
-                                                         toc_page[0].link_name
+                resp = django_reverse('ucomment-root') + toc_page[0].link_name
                 return HttpResponseRedirect(resp)
             else:
                 emsg = ('A master page does not exist in the ucomment database.'
@@ -1431,7 +1433,6 @@ def display_page(page_requested):
                         ' to start compiling your document.' % (
                                        conf.application_path,
                                        django_reverse('ucomment-admin-signin')))
-                a=2
                 return HttpResponse(emsg)
         elif models.Page.objects.filter(link_name=link_name + '/index'):
             # To accommodate a peculiar Sphinx settings for PickleHTMLBuilder
@@ -1584,10 +1585,8 @@ def publish_update_document(request):
     #             Update search index tables in Sphinx search
     msg = 'PUBLISH: Update and publish operation successfully completed'
     log_file.debug(msg)
-    toc_page = models.Page.objects.filter(is_toc=True).filter(
-                                                        prev_link=None)[0]
     msg += ('<br><p>View your document <a href="%s">from this link</a>'
-        '.</p>') % ('/' + conf.url_views_prefix + '/' + toc_page.link_name)
+        '.</p>') % (django_reverse('ucomment-root'))
     return HttpResponse(msg, status=200)
 
 
@@ -2252,8 +2251,8 @@ def format_search_pages_for_web(pages, context, with_case):
                           r'<span id="ucomment-search-term">\1</span>', display)
 
 
-        results[page].append('<li><a href="%s">%s</a>' % ('/' +
-                            conf.url_views_prefix + '/' + page.link_name +\
+        results[page].append('<li><a href="%s">%s</a>' % (\
+                            django_reverse('ucomment-root') + page.link_name +\
                             '?highlight=' + ' '.join(search_words) + \
                             '&with_case=' + str(with_case), page.html_title))
         if page_counts[page] > 1:
@@ -2319,8 +2318,9 @@ def search_document(request, search_terms='', search_type='AND',
         search_type = str(request.POST.get('search_type', search_type)).upper()
         with_case = str(request.POST.get('with_case',
                                                    with_case)).lower()=='true'
-        return HttpResponseRedirect('/'.join(['',  conf.url_views_prefix,
-                '_search', search, search_type, 'case=' + str(with_case)]))
+        return HttpResponseRedirect(\
+                    django_reverse('ucomment-search-document') + \
+                    search +'/'+ search_type +'/'+ 'case=' + str(with_case))
 
     start_time = time.time()
     search_for = search.split()
@@ -2367,8 +2367,8 @@ def search_document(request, search_terms='', search_type='AND',
                          local_toc = '',
                          is_toc = True, # prevents sidebar
                          sidebar = '',  # but still set it to empty
-                         link_name = request.path.lstrip('/' +
-                                                        conf.url_views_prefix))
+                         link_name = request.path.lstrip(\
+                                       django_reverse('ucomment-root')[0:-1]))
 
     log_file.debug('SEARCH: "%s" :: took %f secs' % (search,
                                                      time.time() - start_time))
@@ -2382,7 +2382,6 @@ def admin_signin(request):
     * Dump all fixtures to disk - for backup purposes.
     """
     if request.user.is_authenticated():
-        base = request.path.rstrip('/_admin')
         msg = ('<ul>'
                '<li><a href="%s">The Django admin page for your site</a>'
                '<li><a href="%s">Publish or update the document</a>'
