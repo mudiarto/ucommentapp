@@ -160,10 +160,9 @@ def convert_web_name_to_link_name(page_name, prefix=''):
     if '?' in page_name:
         page_name = page_name.split('?')[0]
     if conf.url_views_prefix:
-        return page_name.split(os.sep + conf.url_views_prefix + \
-                           os.sep)[1].rstrip('/')
+        return page_name.split('/'+conf.url_views_prefix+'/')[1].rstrip('/')
     else:
-        return page_name.split(os.sep)[1].rstrip('/')
+        return page_name.lstrip('/').rstrip('/')
 
 
 def get_site_url(request, add_path=True, add_views_prefix=False):
@@ -176,7 +175,7 @@ def get_site_url(request, add_path=True, add_views_prefix=False):
     >>> get_site_url(request)
     'https://site.example.com/document/_submit-comment/'
     """
-    # Consider using ``request.build_absolute_uri()`` instead
+    # TODO(KGD): Consider using ``request.build_absolute_uri()`` instead
     out = 'http://'
     if request.is_secure():
         out = 'https://'
