@@ -42,6 +42,9 @@ approval_code_length = 42
 # as a template to start from.
 repo_DVCS_type = 'hg'
 
+# The full path and file name to the executable command that runs the DVCS.
+repo_DVCS_exec = '/usr/local/bin/hg'
+
 # The source code for your document.  This must be a valid repository containing
 # all the RST source files.  Also, when the repository is cloned from the
 # remote repo (see the setting below) the Sphinx conf.py file, and

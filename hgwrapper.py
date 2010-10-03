@@ -1,53 +1,115 @@
 """
 Wraps the standard DVCS commands: for mercurial.
 """
-from mercurial import ui, hg, commands, error
-from mercurial.node import short
+# Dictionary of Mercurial verbs: first list entry is the actual verb to use at
+# the command line, while the second entry is a dict of error codes and their
+# corresponding error messages.
+hg_verbs = {'pull':   ['pull',    {}],
+            'update': ['update',  {1: 'Unresolved files.'}],
+            'merge':  ['merge',   {255: 'Conflicts during merge'}],
+            'clone':  ['clone',   {}],
+            'init':   ['init',    {}],
+            'add':    ['add',     {}],
+            'heads':  ['heads',   {0: '<string>'}],
+            'commit': ['commit',  {1: 'Nothing changed'}],
+            'push':   ['push',    {}],
+            'summary':['summary', {0: '<string>'}],  # return stdout
+            }
 
-ui_obj = ui.ui()
-ui_obj.quiet = True
-ui_obj.verbose = False
+# Can be overridden by the module that calls this module, i.e. in ``views.py``:
+#    import hgwrapper as dvcs
+#    dvcs.executable = '/usr/bin/hg'
+executable = '/usr/local/bin/hg'
+
+# Path to the local repo. It must exist prior to calling any function in this
+# module and must be specified by the calling module, i.e. in ``views.py``:
+#    import hgwrapper as dvcs
+#    dvcs.local_repo_physical_dir = '/home/myname/repos/my-document/'
+local_repo_physical_dir = None
+
+# Will be set to true during unit tests
+testing = False
+
+import re, subprocess
+from sphinx.util.osutil import ensuredir
 
 class DVCSError(Exception):
+    """
+    Exception class that must be used to raise any errors related to the DVCS
+    operations.
+    """
     pass
 
-def get_hg_repo(repo):
+def _run_hg_command(command, override_dir=''):
     """
-    Returns a Mercurial repository object, even if ``repo`` is specified as the
-    (string) location of the repository.
+    Runs the given command, as if it were typed at the command line, in the
+    appropriate directory.
     """
-    if isinstance(repo, basestring):
-        try:
-            repo = hg.repository(ui_obj, repo, create=False)
-        except error.RepoError as err:
-            raise DVCSError(err)
-        repo.ui.quiet = ui_obj.quiet
-        repo.ui.verbose = ui_obj.verbose
-    return repo
-
-def get_revision_info(repo=None):
-    """
-    Returns the changeset information for a repository, as a tuple:
-    (integer revision number, unique hexadecimal string)
-    """
-    repo = get_hg_repo(repo)
+    verb = command[0]
+    actions = hg_verbs[verb][1]
     try:
-        parent, dummy = repo.dirstate.parents()
-        return repo.changelog.rev(parent), short(parent)
-    except AttributeError:
-        parent = repo.lookup('tip')
-        return -1, short(parent) # we never use the remote repo's revision num
+        command[0] = hg_verbs[verb][0]
+        command.insert(0, executable)
+        ensuredir(override_dir or local_repo_physical_dir)
+        out = subprocess.Popen(command, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               cwd=override_dir or local_repo_physical_dir)
+        if testing:
+            # For some strange reason, unit tests fail if we don't have
+            # a small pause here.
+            import time
+            time.sleep(0.1)
+
+        if out.returncode == 0 or out.returncode is None:
+            if actions.get(0, '') == '<string>':
+                return out.communicate()[0]
+            else:
+                return out.returncode
+        else:
+            return out.returncode
+
+    except OSError as err:
+        if err.strerror == 'No such file or directory':
+            raise DVCSError('The ``hg`` executable file was not found.')
+
+
+def get_revision_info(remote=False):
+    """
+    Returns the changeset information for the repository, as a tuple:
+    (integer revision number, unique hexadecimal string).
+
+    If ``remote`` is True, then it will return the repo information for the
+    remote repo associated with the local repo.
+
+    If ``remote`` is a string, then it assumes it is a fully qualified
+    locate to another repository (but not an unrelated repo) that can be
+    accessed without authentication.
+    """
+    if isinstance(remote, bool):
+        if remote is True:
+            output = _run_hg_command(['summary', '--remote'])
+        else:
+            output = _run_hg_command(['summary'])
+    elif isinstance(remote, basestring):
+        if remote.startswith('file://'):
+            remote = remote.partition('file://')[2]
+        output = _run_hg_command(['summary'], override_dir=remote)
+
+    # Used to signal that a repo does not exist yet:
+    if len(output) == 0:
+        raise(DVCSError)
+    source = output.split('\n')[0].split(':')
+    return int(source[1]), source[2].split()[0]
 
 def init(dest):
     """
-    Creates a repository in the destination directory.
+    Creates a repository in the destination directory, ``dest``.
 
     This function is not required in ucomment; it is only used for unit-testing.
     """
-    res = commands.init(ui_obj, dest)
-    if res != None and res != 0:
+    out = _run_hg_command(['init', dest], override_dir=dest)
+    if out != None and out != 0:
         raise DVCSError('Could not initialize the repository at %s' % dest)
-
 
 def add(repo, *pats):
     """
@@ -56,101 +118,95 @@ def add(repo, *pats):
 
     This function is not required in ucomment; it is only used for unit-testing.
     """
-    repo = get_hg_repo(repo)
-    out = commands.add(ui_obj, repo, *pats)
+    command = ['add']
+    command.extend(pats)
+    out = _run_hg_command(command, override_dir=repo)
     if out != None and out != 0:
-        raise DVCSError('Could not correctly add all files')
+        raise DVCSError('Could not add one or more files to repository.')
 
-def check_out(repo=None, rev='tip'):
+def check_out(rev='tip'):
     """
-    Operates on the given repository, ``repo``, and checks out the revision
+    Operates on the local repository to update (check out) the revision
     to the given revision number.  The default revision is the `tip`.
 
     Returns the revision info after update, so that one can verify the update
     succeeded.
     """
-    repo = get_hg_repo(repo)
     # Use str(0), because 0 by itself evaluates to None in Python logical checks
-    commands.update(ui_obj, repo, rev=str(rev))
-    return get_revision_info(repo)
+    _run_hg_command(['update', '-r', str(rev)])
+    return get_revision_info()
 
 def clone_repo(source, dest):
     """ Creates a clone of the remote repository given by the ``source`` URL,
     and places it at the destination URL given by ``dest``.
-
-    Returns the changeset information for the local repository.
     """
-    commands.clone(ui_obj, source, dest=dest)
+    out = _run_hg_command(['clone', source, dest])
+    if out != None and out != 0:
+        raise DVCSError(('Could not clone the remote repo, %s, to the required '
+                         'local destination, %s.' % (source, dest)))
 
-def commit(repo, message):
+def commit(message, override_dir=''):
     """
     Commit changes to the ``repo`` repository, with the given commit ``message``
     """
-    # Username making commit: ui.config('ui', 'username')
-    repo = get_hg_repo(repo)
-    commands.commit(ui_obj, repo, message=message)
+    _run_hg_command(['commit', '-m', message],  override_dir)
 
-def commit_and_push_updates(message, local, remote):
+def commit_and_push_updates(message):
     """
-    After making changes to file(s), programatically commit them to the
-    ``local`` repository, with the given commit ``message``; then push changes
-    back to the ``remote`` repository.
-
-    You may optionally want to update the remote repositry also (default=False).
+    After making changes to file(s), programatically commit them to the local
+    repository, with the given commit ``message``; then push changes
+    back to the source repository from which the local repo was cloned.
     """
-    # Username making commit: ui.config('ui', 'username')
-    local_repo = get_hg_repo(local)
-    remote_repo = get_hg_repo(remote)
-    # Merge in the local repo first
-    update_requires_manual_merge = commands.update(ui_obj, local_repo)
-    if update_requires_manual_merge:
+    # Update in the local repo first: can happen when, for example a comment is
+    # resubmitted on the same node and the first commit has not been pushed
+    # through to the remote server.
+    output = _run_hg_command(['update'])
+    if output is not None:
         return False, False
 
     # Then commit the changes
-    commands.commit(ui_obj, local_repo, message=message)
+    _run_hg_command(['commit', '-m', message])
 
     # Try pushing the commit
-    try:
-        local_repo.push(remote_repo)
-    except error.Abort as err:
-        raise DVCSError(err)
+    out = _run_hg_command(['push'])
+    if out != None and out != 0:
+        raise DVCSError('Could not push changes to the source repository.')
 
-    return get_revision_info(local_repo)
+    return get_revision_info()
 
-def pull_update_and_merge(local, remote):
+def pull_update_and_merge():
     """
     Pulls, updates and merges changes from the other ``remote`` repository into
     the ``local`` repository.
 
-    Does not handle the case when the changeset introduces a new head.
+    If the "pull" results on more than one head, then we will merge.
+    See: http://hgbook.red-bean.com/read/a-tour-of-mercurial-merging-work.html
 
-    Will always update to the tip revision.
+    After merging, it will automatically commit and leave the local repo at
+    this tip revision.
+
+    We cannot handle the case where merging fails!  In that case we will return
+    a DVCSError.
     """
-    # Wrap any errors into a single error type and return that back to Django.
-    try:
-        # hg pull -u, hg merge, hg commit
-        local_repo = get_hg_repo(local)
 
-        # Pull in all changes from the remote repo
-        result_pull = commands.pull(ui_obj, local_repo,
-                                    source=remote,
-                                    rev=['tip'])
+    # Performs the equivalent of "hg pull -u; hg merge; hg commit"
 
-        # Next, Update the local repo
-        commands.update(ui_obj, local_repo)
+    # Pull in all changes from the remote repo and update.
+    _run_hg_command(['pull', '-u'])
+    # Above will return a message: "not updating, since new heads added"
+    # if we require merging.
 
-        # Anything to merge?
-        remote_repo = get_hg_repo(remote)
-        new_heads = local_repo.pull(remote_repo)
+    # Anything to merge?  Are there more than one head?
+    output_heads = _run_hg_command(['heads'])
+    num_heads = len(re.findall('changeset:   (\d)+', output_heads))
 
-        # Merge any changes:
-        if new_heads:
-            merge_error = commands.merge(ui_obj, local_repo)
+    # Merge any changes:
+    if num_heads > 1:
+        merge_error = _run_hg_command(['merge'])
 
-            # Commit any changes from the merge
-            if not merge_error:
-                commit(local_repo, message= ('Auto commit - ucomment hgwrapper:'
-                                             ' updated and merged changes.'))
-
-    except (error.Abort, error.RepoError) as err:
-        raise DVCSError(err)
+        # Commit any changes from the merge
+        if not merge_error:
+            commit(('Auto commit - ucomment hgwrapper: '
+                                           'updated and merged changes.'))
+        else:
+            raise DVCSError('Could not automatically merge during update.')

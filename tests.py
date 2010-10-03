@@ -6,7 +6,14 @@ from sphinx.util import ensuredir
 from models import CommentReference
 from conf import settings as conf
 import views as views
-import hgwrapper as dvcs
+
+if conf.repo_DVCS_type == 'hg':
+    import hgwrapper as dvcs
+    dvcs.executable = conf.repo_DVCS_exec
+    dvcs.local_repo_physical_dir = conf.local_repo_physical_dir
+    dvcs.testing = True
+
+conf.TESTING = True
 
 try:
     import wingdbstub
@@ -29,7 +36,11 @@ class CompileTests(TestCase):
         the test.
         """
         self.tempdir = tempfile.mkdtemp() + os.sep
+        conf.local_repo_physical_dir = self.tempdir + 'local_repo'
+        conf.local_repo_URL = 'file://' + conf.local_repo_physical_dir
+        dvcs.local_repo_physical_dir = conf.local_repo_physical_dir
         srcdir = os.path.join(os.getcwd(), conf.app_dirname, 'testing')
+
 
         # Create the remote repository from scratch; copy files to it and
         # add and commit.
@@ -37,7 +48,7 @@ class CompileTests(TestCase):
         shutil.copytree(srcdir, remote_repo)
         dvcs.init(dest=remote_repo)
         conf.remote_repo_URL = 'file://' + remote_repo.replace(os.sep, '/')
-        dvcs.add(conf.remote_repo_URL)
+        dvcs.add(remote_repo)
 
         f = open(remote_repo + os.sep + 'conf.py', 'r')
         lines = f.readlines()
@@ -49,11 +60,7 @@ class CompileTests(TestCase):
         f = open(remote_repo + os.sep + 'conf.py', 'w')
         f.writelines(lines)
         f.close()
-        dvcs.commit(conf.remote_repo_URL, message='First commit; unit testing.')
-
-        # Check out the testing files into the temporary directory.
-        conf.local_repo_physical_dir = self.tempdir + 'local_repo'
-        conf.local_repo_URL = 'file://' + conf.local_repo_physical_dir
+        dvcs.commit(override_dir=remote_repo, message='Commit; unit testing.')
 
     def tearDown(self):
         """ Remove temporary files. """
@@ -257,6 +264,7 @@ class Test_DVCS(TestCase):
 
         self.local_repo = 'file://' + self.local_path
         self.remote_repo = 'file://' + self.remote_path
+        dvcs.local_repo_physical_dir = self.local_path
 
 
     def tearDown(self):
@@ -267,17 +275,16 @@ class Test_DVCS(TestCase):
 
         # Create, add and commit to the remote repo
         dvcs.init(dest=self.remote_repo)
-        remote_repo_obj = dvcs.get_hg_repo(self.remote_repo)
-        cwd = os.getcwd()
-        os.chdir(self.remote_path)
-        dvcs.add(remote_repo_obj, 'index.rst')
-        os.chdir(cwd)
-        dvcs.commit(remote_repo_obj, message='First commit')
+        dvcs.add(self.remote_path, 'index.rst')
+        dvcs.commit(message='First commit', override_dir=self.remote_path)
+
+        # Verify that we cannot expect to query the source repo:
+        self.assertRaises(dvcs.DVCSError, dvcs.get_revision_info, remote=True)
 
         # Clone the remote repo to the local repo
         dvcs.clone_repo(source=self.remote_repo, dest=self.local_repo)
         # Redundant, but tests the code in this file
-        rev_num, hex_str = dvcs.check_out(repo=self.local_repo, rev='tip')
+        rev_num, hex_str = dvcs.check_out(rev='tip')
         self.assertEqual(rev_num, 0)
 
         # Now, in the local repo, make some changes to test the commenting workflow
@@ -289,15 +296,11 @@ class Test_DVCS(TestCase):
                       'Paragraph 3\n'])
         f.close()
         rev_num, hex_str = dvcs.commit_and_push_updates(
-            message='Auto comment on para 2',
-            local=self.local_repo,
-            remote=self.remote_repo,
-            update_remote=True)
+                                            message='Auto comment on para 2')
         self.assertEqual(rev_num, 1)
 
         # Check out an old revision to modify, rather than the latest revision
-
-        rev_num, hex_str = dvcs.check_out(repo=self.local_repo, rev=0)
+        rev_num, hex_str = dvcs.check_out(rev=0)
         self.assertEqual(rev_num, 0)
         # Note, we don't really care about the checked out file above here, but in
         # the ucomment views.py code we do actually use the checked out files.
@@ -309,15 +312,12 @@ class Test_DVCS(TestCase):
                       '.. ucomment:: bbbbbb: 22,\n'])
         f.close()
         rev_num, hex_str = dvcs.commit_and_push_updates(
-            message='Auto comment on para 3',
-            local=self.local_repo,
-            remote=self.remote_repo,
-            update_remote=True)
+                                        message='Auto comment on para 3')
         self.assertEqual(rev_num, 2)
 
 
         # Add a comment above on the local repo, again starting from an old version.
-        rev_num, hex_str = dvcs.check_out(repo=self.local_repo, rev=0)
+        rev_num, hex_str = dvcs.check_out(rev=0)
         self.assertEqual(rev_num, 0)
         # Now add a comment to paragraph 1
         f = open(self.local_path + 'index.rst', 'w')
@@ -326,10 +326,10 @@ class Test_DVCS(TestCase):
                       'Paragraph 3\n'])
         f.close()
         rev_num, hex_str = dvcs.commit_and_push_updates(
-            message='Auto comment on para 1',
-            local=self.local_repo,
-            remote=self.remote_repo,
-            update_remote=True)
+                                            message='Auto comment on para 1')
+            #local=self.local_repo,
+            #remote=self.remote_repo,
+            #update_remote=True)
         self.assertEqual(rev_num, 3)
 
         f = open(self.local_path + 'index.rst', 'r')
@@ -345,25 +345,20 @@ class Test_DVCS(TestCase):
 
 
         # Now test the code in dvcs.pull_update_and_merge(...).
-        # Handles the basic case when the author makes changes and they are
-        # imported without requiring a merge.
+        # Handles the basic case when the author makes changes (they are pushed
+        # to the remote repo) and they should be imported imported into the
+        # local repo without requiring a merge.
         final_result.insert(3, 'A new paragraph.\n')
         final_result.insert(4, '\n')
         with open(self.remote_path + 'index.rst', 'w') as f_handle:
             f_handle.writelines(final_result)
 
-        dvcs.commit(self.remote_path, message='Made some updates.')
-        dvcs.pull_update_and_merge(self.local_path, self.remote_path)
+        dvcs.commit(override_dir = self.remote_path, message='Remote update.')
+        dvcs.pull_update_and_merge()
 
         with open(self.local_path + 'index.rst', 'r') as f_handle:
             local_lines = f_handle.readlines()
         self.assertEqual(local_lines, final_result)
-
-
-
-
-
-
 
 class Test_RST_File_Changes(TestCase):
     """
@@ -847,3 +842,4 @@ class Test_RST_File_Changes(TestCase):
 
 #print "More source code"
 #print("I love source code")
+

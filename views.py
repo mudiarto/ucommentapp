@@ -49,6 +49,8 @@ from sphinx.util.osutil import ensuredir
 
 if conf.repo_DVCS_type == 'hg':
     import hgwrapper as dvcs
+    dvcs.executable = conf.repo_DVCS_exec
+    dvcs.local_repo_physical_dir = conf.local_repo_physical_dir
 
 # Import the application's models, without knowing the application name.
 models = getattr(__import__(conf.app_dirname, None, None, ['models']),'models')
@@ -706,29 +708,27 @@ def update_local_repo(rev='tip'):
                    'be created.')
             raise UcommentError(err, msg)
 
-        rev_num, hex_str = dvcs.get_revision_info(conf.local_repo_URL)
+        rev_num, hex_str = dvcs.get_revision_info()
     except dvcs.DVCSError:
         try:
-            rev_num, hex_str = dvcs.get_revision_info(conf.remote_repo_URL)
+            dvcs.clone_repo(conf.remote_repo_URL, conf.local_repo_URL)
         except dvcs.DVCSError as error_remote:
             msg = ('The remote repository does not exist, or is '
                    'badly specified in the settings file.')
             raise UcommentError(error_remote, msg)
 
-        dvcs.clone_repo(conf.remote_repo_URL, conf.local_repo_URL)
+
         log_file.debug('Created a clone of the remote repo in the local path')
 
     # Update the local repository to rev='tip' from the source repo first
     try:
-        dvcs.pull_update_and_merge(local=conf.local_repo_URL,
-                                   remote=conf.remote_repo_URL),
+        dvcs.pull_update_and_merge()
     except dvcs.DVCSError as err:
         raise UcommentError(err, 'Repository update and merge error')
 
-    rev_num, hex_str = dvcs.get_revision_info(repo=conf.local_repo_URL)
+    rev_num, hex_str = dvcs.get_revision_info()
     if rev != 'tip' and isinstance(rev, int):
-        rev_num, hex_str = dvcs.check_out(repo=conf.local_repo_URL,
-                                          rev=rev)
+        rev_num, hex_str = dvcs.check_out(rev=rev)
     return rev_num, hex_str
 
 def commit_to_repo_and_push(commit_message):
@@ -743,9 +743,7 @@ def commit_to_repo_and_push(commit_message):
 
     Returns the changeset code for the local repo on completion.
     """
-    rev_num, hex_str = dvcs.commit_and_push_updates(commit_message,
-                                        local = conf.local_repo_URL,
-                                        remote = conf.remote_repo_URL)
+    rev_num, hex_str = dvcs.commit_and_push_updates(commit_message)
 
     # Merge failed!  Log it and email the site admin
     if not(rev_num) and not(hex_str):
@@ -754,8 +752,6 @@ def commit_to_repo_and_push(commit_message):
 
     # Check that changeset and revision matches the remote repo numbers
     return rev_num, hex_str
-
-
 
 def commit_comment_to_sources(reference, node, func, additional=None):
     """
@@ -1536,7 +1532,9 @@ def retrieve_comment_counts(request):
                             if comment.is_approved:
                                 num += 1
 
-                        response_dict[key] = num
+                    # Every key must return a result, even if it is zero
+                    response_dict[key] = num
+
                 log_file.debug('COUNTS: for %d nodes retrieved in %f secs' %\
                            (len(request.POST.keys()), time.time()-start_time))
 
@@ -1708,7 +1706,7 @@ def call_sphinx_to_publish():
         if warning.tell():
             warning.seek(0)
             for line in warning.readlines():
-                log_file.warn('PUBLISH WARNING: ' + line)
+                log_file.warn('PUBLISH WARNING: ' + line.strip())
 
         # Switch back to the pickle builder (we need this when doing the
         # database commits)
