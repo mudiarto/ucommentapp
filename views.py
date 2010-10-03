@@ -746,8 +746,8 @@ def commit_to_repo_and_push(commit_message):
 
     # Merge failed!  Log it and email the site admin
     if not(rev_num) and not(hex_str):
-        raise UcommentError(('Repo merging failed when trying to commit with '
-                             'message %s' % commit_message))
+        raise UcommentError(('Repo merging failed (conflicts?) when trying to '
+                             'commit. Commit message was: %s' % commit_message))
 
     # Check that changeset and revision matches the remote repo numbers
     return rev_num, hex_str

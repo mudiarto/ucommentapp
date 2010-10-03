@@ -174,8 +174,8 @@ def commit_and_push_updates(message):
     # Try pushing the commit
     out = _run_hg_command(['push'])
     if out != None and out != 0:
-        raise DVCSError(('Could not push changes to the source repository: ',
-                          'additional info = %s' % out[0]))
+        raise DVCSError(('Could not push changes to the source repository: '
+                          'additional info = %s' % out[0].strip()))
 
     return get_revision_info()
 
