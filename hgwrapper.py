@@ -60,6 +60,10 @@ def _run_hg_command(command, override_dir=''):
             import time
             time.sleep(0.1)
 
+        stderr = out.stderr.readlines()
+        if stderr:
+            return stderr
+
         if out.returncode == 0 or out.returncode is None:
             if actions.get(0, '') == '<string>':
                 return out.communicate()[0]
@@ -89,15 +93,15 @@ def get_revision_info(remote=False):
         if remote is True:
             output = _run_hg_command(['summary', '--remote'])
         else:
-            output = _run_hg_command(['summary'])
+            output = _run_hg_command(['summary', '-R', local_repo_physical_dir])
     elif isinstance(remote, basestring):
         if remote.startswith('file://'):
             remote = remote.partition('file://')[2]
         output = _run_hg_command(['summary'], override_dir=remote)
 
     # Used to signal that a repo does not exist yet:
-    if len(output) == 0:
-        raise(DVCSError)
+    if output[0][0:5] == 'abort':
+        raise(DVCSError(output[0]))
     source = output.split('\n')[0].split(':')
     return int(source[1]), source[2].split()[0]
 
@@ -170,7 +174,8 @@ def commit_and_push_updates(message):
     # Try pushing the commit
     out = _run_hg_command(['push'])
     if out != None and out != 0:
-        raise DVCSError('Could not push changes to the source repository.')
+        raise DVCSError(('Could not push changes to the source repository: ',
+                          'additional info = %s' % out[0]))
 
     return get_revision_info()
 

@@ -331,7 +331,7 @@ def compile_RST_to_HTML(raw_RST):
 
     Also copy over generated MATH media to the correct directory on the server.
     """
-    log_file.debug('COMPILE: file = ' + raw_RST)
+    log_file.debug('COMPILE: comment: "%s"' % raw_RST)
     ensuredir(conf.comment_compile_area)
     with open(conf.comment_compile_area + os.sep + 'index.rst', 'w') as fhand:
         fhand.write(raw_RST)
@@ -716,7 +716,6 @@ def update_local_repo(rev='tip'):
             msg = ('The remote repository does not exist, or is '
                    'badly specified in the settings file.')
             raise UcommentError(error_remote, msg)
-
 
         log_file.debug('Created a clone of the remote repo in the local path')
 
