@@ -570,8 +570,9 @@ def submit_and_store_comment(request):
 
     log_file.debug('COMMENT: Submitted comment now saved in the database.')
 
-    # Send an email to the poster regarding their comment; # TODO(KGD): queue it
-    email_poster_after_submission(poster, the_comment, request)
+    # Send emails to the poster and comment admin regarding the new comment
+    # TODO(KGD): queue it
+    emails_after_submission(poster, the_comment, request)
 
     total_time = str(round(time.time() - start_time, 1))
     log_file.debug(('COMMENT: Emails to poster and admin sent successfully; '
@@ -1209,7 +1210,7 @@ def alert_system_admin(error_msg):
 
 
 
-def email_poster_after_submission(poster, comment, request):
+def emails_after_submission(poster, comment, request):
     """ Email the poster once the comment has been submitted to the website,
     """
     # Don't bother if no email address

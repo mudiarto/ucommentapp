@@ -214,4 +214,5 @@ def pull_update_and_merge():
             commit(('Auto commit - ucomment hgwrapper: '
                                            'updated and merged changes.'))
         else:
-            raise DVCSError('Could not automatically merge during update.')
+            raise DVCSError(('Could not automatically merge during update. '
+                             'More info = %s' % merge_error[0].strip()))
