@@ -694,9 +694,10 @@ def update_local_repo(rev='tip'):
     * hg merge  (merges any changes that might be required)
 
     Then if the optional input ``rev`` is provided, it will revert the
-    repository to that integer revision number. Default:
+    repository to that revision, given by a string, containing the hexadecimal
+    indicator for the required revision.
 
-    Returns the hexadecimal changeset and revision code for the local repo as
+    This function returns the hexadecimal changeset for the local repo as
     it has been left after all this activity.
     """
     # First check if the local repo exists; if not, create a clone from
@@ -709,7 +710,7 @@ def update_local_repo(rev='tip'):
                    'be created.')
             raise UcommentError(err, msg)
 
-        rev_num, hex_str = dvcs.get_revision_info()
+        hex_str = dvcs.get_revision_info()
     except dvcs.DVCSError:
         try:
             dvcs.clone_repo(conf.remote_repo_URL, conf.local_repo_URL)
@@ -726,10 +727,10 @@ def update_local_repo(rev='tip'):
     except dvcs.DVCSError as err:
         raise UcommentError(err, 'Repository update and merge error')
 
-    rev_num, hex_str = dvcs.get_revision_info()
-    if rev != 'tip' and isinstance(rev, int):
-        rev_num, hex_str = dvcs.check_out(rev=rev)
-    return rev_num, hex_str
+    hex_str = dvcs.get_revision_info()
+    if rev != 'tip' and isinstance(rev, basestring):
+        hex_str = dvcs.check_out(rev=rev)
+    return hex_str
 
 def commit_to_repo_and_push(commit_message):
     """
@@ -743,15 +744,15 @@ def commit_to_repo_and_push(commit_message):
 
     Returns the changeset code for the local repo on completion.
     """
-    rev_num, hex_str = dvcs.commit_and_push_updates(commit_message)
+    hex_str = dvcs.commit_and_push_updates(commit_message)
 
     # Merge failed!  Log it and email the site admin
-    if not(rev_num) and not(hex_str):
+    if not(hex_str):
         raise UcommentError(('Repo merging failed (conflicts?) when trying to '
                              'commit. Commit message was: %s' % commit_message))
 
     # Check that changeset and revision matches the remote repo numbers
-    return rev_num, hex_str
+    return hex_str
 
 def commit_comment_to_sources(reference, node, func, additional=None):
     """
@@ -774,7 +775,7 @@ def commit_comment_to_sources(reference, node, func, additional=None):
 
         # Get the RST file to the revision required for adding the comment:
         revision_reqd = int(reference.revision_changeset.split(':')[0])
-        rev_num, hex_str = update_local_repo(revision_reqd)
+        hex_str = update_local_repo(revision_reqd)
 
         f_handle = file(reference.file_name, 'r')
         RST_source = f_handle.readlines()
@@ -800,14 +801,13 @@ def commit_comment_to_sources(reference, node, func, additional=None):
         f_handle.close()
 
         short_filename = os.path.split(reference.file_name)[1]
-        changeset = str(rev_num) + ':' + hex_str
         commit_message = ('COMMIT: Automatic comment [comment_root=%s, '
                           'node=%s, line=%s, file=%s]; repo_id=%s') % \
                        (c_root, node, str(reference.line_number),
-                        short_filename, changeset)
-        rev_num, hex_str = commit_to_repo_and_push(commit_message)
+                        short_filename, hex_str)
+        hex_str = commit_to_repo_and_push(commit_message)
         log_file.debug(commit_message)
-        return str(rev_num) + ':' + hex_str, c_root
+        return hex_str, c_root
     except (UcommentError, dvcs.DVCSError) as err:
         UcommentError(err)
         return False, False
@@ -1595,8 +1595,7 @@ def call_sphinx_to_publish():
     # TODO(KGD): can we show a list of changed files to the author before
     #            s/he clicks "Publish": you will have to dig into Sphinx's
     #            internals to see that.
-    rev_num, hex_str = update_local_repo()
-    revision_changeset = str(rev_num) + ':' + hex_str
+    revision_changeset = update_local_repo()
     log_file.debug('PUBLISH: the document with revision changeset = %s' % \
                    revision_changeset)
 

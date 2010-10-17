@@ -79,8 +79,7 @@ def _run_hg_command(command, override_dir=''):
 
 def get_revision_info(remote=False):
     """
-    Returns the changeset information for the repository, as a tuple:
-    (integer revision number, unique hexadecimal string).
+    Returns the unique hexadecimal string the represents the current changeset.
 
     If ``remote`` is True, then it will return the repo information for the
     remote repo associated with the local repo.
@@ -103,7 +102,7 @@ def get_revision_info(remote=False):
     if output[0][0:5] == 'abort':
         raise(DVCSError(output[0]))
     source = output.split('\n')[0].split(':')
-    return int(source[1]), source[2].split()[0]
+    return source[2].split()[0]
 
 def init(dest):
     """
@@ -143,17 +142,25 @@ def check_out(rev='tip'):
 def clone_repo(source, dest):
     """ Creates a clone of the remote repository given by the ``source`` URL,
     and places it at the destination URL given by ``dest``.
+
+    Returns the hexadecimal revision number of the destination repo.
     """
     out = _run_hg_command(['clone', source, dest])
     if out != None and out != 0:
         raise DVCSError(('Could not clone the remote repo, %s, to the required '
                          'local destination, %s.' % (source, dest)))
+    return get_revision_info()
 
 def commit(message, override_dir=''):
     """
     Commit changes to the ``repo`` repository, with the given commit ``message``
+    Returns the hexadecimal revision number.
     """
     _run_hg_command(['commit', '-m', message],  override_dir)
+    if override_dir:
+        return  # Used for unit testing: no output required
+    else:
+        return get_revision_info()
 
 def commit_and_push_updates(message):
     """
@@ -166,7 +173,7 @@ def commit_and_push_updates(message):
     # through to the remote server.
     output = _run_hg_command(['update'])
     if output is not None:
-        return False, False
+        return False
 
     # Then commit the changes
     _run_hg_command(['commit', '-m', message])

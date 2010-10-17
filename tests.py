@@ -282,10 +282,10 @@ class Test_DVCS(TestCase):
         self.assertRaises(dvcs.DVCSError, dvcs.get_revision_info, remote=True)
 
         # Clone the remote repo to the local repo
-        dvcs.clone_repo(source=self.remote_repo, dest=self.local_repo)
+        r_hex = dvcs.clone_repo(source=self.remote_repo, dest=self.local_repo)
         # Redundant, but tests the code in this file
-        rev_num, hex_str = dvcs.check_out(rev='tip')
-        self.assertEqual(rev_num, 0)
+        rev0 = dvcs.check_out(rev='tip')
+        self.assertEqual(rev0, r_hex)
 
         # Now, in the local repo, make some changes to test the commenting workflow
 
@@ -295,13 +295,11 @@ class Test_DVCS(TestCase):
                       'Paragraph 2\n', '\n', '.. ucomment:: aaaaaa: 11,\n', '\n'
                       'Paragraph 3\n'])
         f.close()
-        rev_num, hex_str = dvcs.commit_and_push_updates(
-                                            message='Auto comment on para 2')
-        self.assertEqual(rev_num, 1)
+        rev1 = dvcs.commit_and_push_updates(message='Auto comment on para 2')
 
         # Check out an old revision to modify, rather than the latest revision
-        rev_num, hex_str = dvcs.check_out(rev=0)
-        self.assertEqual(rev_num, 0)
+        hex_str = dvcs.check_out(rev=rev0)
+        self.assertEqual(hex_str, rev0)
         # Note, we don't really care about the checked out file above here, but in
         # the ucomment views.py code we do actually use the checked out files.
 
@@ -311,26 +309,17 @@ class Test_DVCS(TestCase):
                       'Paragraph 2\n', '\n', 'Paragraph 3\n', '\n',
                       '.. ucomment:: bbbbbb: 22,\n'])
         f.close()
-        rev_num, hex_str = dvcs.commit_and_push_updates(
-                                        message='Auto comment on para 3')
-        self.assertEqual(rev_num, 2)
-
+        rev2 = dvcs.commit_and_push_updates(message='Auto comment on para 3')
 
         # Add a comment above on the local repo, again starting from an old version.
-        rev_num, hex_str = dvcs.check_out(rev=0)
-        self.assertEqual(rev_num, 0)
+        hex_str = dvcs.check_out(rev=rev0)
         # Now add a comment to paragraph 1
         f = open(self.local_path + 'index.rst', 'w')
         f.writelines(['Header\n','======\n', '\n', 'Paragraph 1\n', '\n',
                       '.. ucomment:: cccccc: 33,\n', '\n', 'Paragraph 2\n', '\n',
                       'Paragraph 3\n'])
         f.close()
-        rev_num, hex_str = dvcs.commit_and_push_updates(
-                                            message='Auto comment on para 1')
-            #local=self.local_repo,
-            #remote=self.remote_repo,
-            #update_remote=True)
-        self.assertEqual(rev_num, 3)
+        hex_str = dvcs.commit_and_push_updates(message='Auto comment on para 1')
 
         f = open(self.local_path + 'index.rst', 'r')
         lines = f.readlines()
