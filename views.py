@@ -166,6 +166,8 @@ def convert_web_name_to_link_name(page_name, prefix=''):
     else:
         return page_name.lstrip('/').rstrip('/')
 
+    # TODO(KGD): remove ``conf.url_views_prefix``, and the need for this
+    #            function.  Can we not use the reverse(..) function?
 
 def get_site_url(request, add_path=True, add_views_prefix=False):
     """
@@ -1125,10 +1127,11 @@ def email_poster_pending(poster, comment):
     message = pending_template.render(settings=conf, poster=poster,
                                       comment=comment)
 
-    send_email(from_address = conf.email_from,
-               to_addresses = [poster.email],
-               subject = conf.once_submitted_subject,
-               message = message)
+    if conf.once_submitted_subject:
+        send_email(from_address = conf.email_from,
+                   to_addresses = [poster.email],
+                   subject = conf.once_submitted_subject,
+                   message = message)
 
 def email_poster_approved(poster, comment):
     """ Sends an email to the poster to let them know their comment has been
@@ -1661,9 +1664,9 @@ def call_sphinx_to_publish():
                      warningiserror = False,
                      tags = [])
 
-        if app.builder.name != 'pickle' and conf.django_serves_html:
-            emsg = ('The ``django_serves_html`` option is True; please '
-                    'use the Sphinx "pickle" builder to compile the RST files.')
+        if app.builder.name != 'pickle':
+            emsg = ('Please use the Sphinx "pickle" builder to compile the '
+                    'RST files.')
             log_file.error(emsg)
             # TODO(KGD): return HttpResponse object still
             return
@@ -1675,6 +1678,13 @@ def call_sphinx_to_publish():
                                     None, ['TextBuilder']), 'TextBuilder')
         text_builder = text_builder_cls(app)
         pickle_builder = app.builder
+
+        if 'ucomment' not in app.env.config:
+            emsg = ('Please ensure the `ucomment` dictionary appears in your '
+                    '``conf.py`` file.')
+            log_file.error(emsg)
+            # TODO(KGD): return HttpResponse object still
+            return
 
         # Call the ``pickle`` builder
         app.env.config.ucomment['revision_changeset'] = revision_changeset
@@ -2409,4 +2419,8 @@ def admin_signin(request):
         user = django_auth.authenticate(username=username, password=password)
         if user is not None and user.is_active:
             django_auth.login(request, user)
+            return HttpResponseRedirect(request.path)
+        else:
+            # TODO(KGD): respond that user does not exist, or that password
+            #            is incorrect;  redirect to log in page again.
             return HttpResponseRedirect(request.path)
