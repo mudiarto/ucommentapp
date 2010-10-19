@@ -3,76 +3,131 @@
 What is |ucomment|
 ====================
 
-The value of a document published to the web can benefit tremendously from interaction with its readers.  Correcting typos, improving clarity, or enhancing the document with experiences and 
-notes from the readers is helpful for other readers, and the original author(s).
+The value of a document published to the web can benefit tremendously from
+interaction with its readers.  Correcting typos, improving clarity, or
+enhancing the document with experiences and notes from the readers is helpful
+for other readers, and the original author(s).
 
-|ucomment| is a Django application that allows for web-based commenting on a document. Unlike :ref:`other commenting systems <other-commenting-systems>`, |ucomment| was developed specifically 
-for commenting on evolving documentation.  In other words, the comments are to be integrated (directly, or modified), into the document by the author, and then the revised document can be 
-published again to the web. |ucomment| will work also with documents that are static.
+|ucomment| is a Django application that allows for web-based commenting on a
+document. Unlike :ref:`other commenting systems <other-commenting-systems>`,
+|ucomment| was developed specifically for commenting on evolving documentation.
+In other words, the comments are to be integrated (directly, or modified), into
+the document by the author, and then the revised document can be
+published again to the web. |ucomment| will work also with documents that are
+static.
 
-|ucomment| requires the author write the document using `reStructuredText <http://en.wikipedia.org/wiki/ReStructuredText>`_ in a text file.  The `Sphinx documentation generator 
-<http://sphinx.pocoo.org/latest/>`_ converts this to HTML output (and can be used to generate PDF, ebook, and other output formats also).  A distributed version control system (e.g. Mercurial) 
-is used to track all revisions and comments added to the document.  Finally, Django is used to store all comments, page visits, user statistics, implement server-side search for the document, 
-and comment administration can be done in the Django admin interface.
+|ucomment| requires the author write the document using `reStructuredText
+<http://en.wikipedia.org/wiki/ReStructuredText>`_ in a text file.  The
+`Sphinx documentation generator <http://sphinx.pocoo.org/latest/>`_ converts
+this to HTML output (and can be used to generate PDF, ebook, and other output
+formats also).  A distributed version control system (e.g. Mercurial) is used
+to track all revisions and comments added to the document.  Finally, Django
+is used to store all comments, page visits, user statistics, implement
+server-side search for the document, and comment administration can be done in
+the Django admin interface.
 
-Once the document is published to the web, then user comments may be submitted anonymously (customizable).  Comments must be approved by a site administrator (customizable), via a single-click 
-URL to either accept or reject the comment.  Once approved, comments will appear on the site with the next page.
+Once the document is published to the web, then user comments may be submitted
+anonymously (customizable).  Comments must be approved by a site administrator
+(customizable), via a single-click URL to either accept or reject the comment.
+Once approved, comments will appear on the site with the next page.
 
-The Sphinx documentation generator provides good-looking tabular output, mathematical equations, and so forth.  These can all be customized by the site administrator using Sphinx templates and 
-cascading style 
+The Sphinx documentation generator provides good-looking tabular output,
+mathematical equations, and so forth.  These can all be customized by the site
+administrator using Sphinx templates and cascading style sheets.
 
-An example of |ucomment| in action can be seen at the online book, `Process Improvement using Data <http://pid.connectmv.com>`_, which is still a work in progress.
+An example of |ucomment| in action can be seen at the online book,
+`Process Improvement using Data <http://pid.connectmv.com>`_, which is still
+a work in progress.
 
 .. _other-commenting-systems:
 
 Other web-based commenting systems
 ------------------------------------
 
-Full credit for the idea of web-based commenting goes to various websites, particularly `The Django Book <http://djangobook.com/>`_ which was the strongest source of ideas for |ucomment|. That 
-site shows comments in a sidebar, with speech bubbles either containing a number or no number.  These bubbles invite the user to click on them to view the existing comments, or add their own 
-comment.
+Full credit for the idea of web-based commenting goes to various websites,
+particularly `The Django Book <http://djangobook.com/>`_ which was the
+strongest source of ideas for |ucomment|. That site shows comments in a
+sidebar, with speech bubbles either containing a number or no number.  These
+bubbles invite the user to click on them to view the existing comments, or
+add their own comment.
 
-The site for the book called `Mercurial: The Definitive Guide <http://hgbook.red-bean.com>`_ follows a similar idea, but uses inline commenting.  A link appears after every paragraph, figure, 
-source code snippet, etc, that either shows "No comments" or "N comments", where N is some integer.  
+The site for the book called `Mercurial: The Definitive Guide
+<http://hgbook.red-bean.com>`_ follows a similar idea, but uses inline
+commenting.  A link appears after every paragraph, figure, source code snippet,
+*etc*, that either shows "No comments" or "N comments", where N is some integer.
 
-|ucomment| implements the type of comments as used on the Django Book website.  Inline commenting is easily added to |ucomment|, but is not currently implemented.  (I personally find inline 
-commenting a bit distracting.)
+|ucomment| implements the type of comments as used on the Django Book website.
+Inline commenting is easily added to |ucomment|, but is not currently
+implemented.  (I personally find inline commenting a bit distracting.)
 
 Bullet point feature summary
 -------------------------------
 
-* The document can be updated and republished on the web, and the original comments will correctly move to the updated location.
-* Long chapters or sections in the document can be optionally split into smaller subsections that each appear on their own HTML page.  
-* Links for ``Next``, ``Previous`` and ``Table of Contents`` help the reader navigate the various sections of the document.
-* Comments are written in reStructuredText (allows for math, bullet points, tables, etc), and must be previewed by the reader before being submitted.
-* Once submitted, the comment administrator can approve or rejects new comments via email links; the comment submitter is informed of the decision by email also.
+* The document can be updated and republished on the web, and the original
+comments will correctly move to the updated location.
+
+* Long chapters or sections in the document can be optionally split into
+smaller subsections that each appear on their own HTML page.
+
+* Links for ``Next``, ``Previous`` and ``Table of Contents`` help the reader
+navigate the various sections of the document.
+
+* Comments are written in reStructuredText (allows for math, bullet points,
+tables, etc), and must be previewed by the reader before being submitted.
+
+* Once submitted, the comment administrator can approve or rejects new
+comments via email links; the comment submitter is informed of the decision by
+email also.
+
 * Email alerts are sent to the site administrator if any errors occurs.
-* The settings for comment acceptance are flexible.  For example, the default settings will auto-approve future comments from a  poster who has submitted 3 or more approved comments in the past.
-* Any comments can always be removed from the document's web output by marking a checkbox in the Django admin site.
-* Long table of contents entries are shrunk and expanded using Javascript.  See http://pid.connectmv.com for an example.
-* When the user navigated back to the table of contents they are shown the page they came from; to help navigate large documents.
-* Support for  mathematics and comments on equations: MathJax and pngmath extensions have been tested.
-* Simple, full text search of the document is available; a feature request is that other 3rd party search plugins can be used instead. 
-* Search is accessible via a URL: ``http://example.com/docs/-search/search Term/AND/case=False`` will perform a case-insensitive search for the word ``search`` and ``Term``.  The ``AND`` can be 
-replaced with ``OR``.
-* A customizable template is provided so that you can render the page within your existing website and surround the document content with other content. Templated items include:
+
+* The settings for comment acceptance are flexible. For example, the default
+settings will auto-approve future comments from a poster who has submitted 3
+or more approved comments in the past.
+
+* Any comments can always be removed from the document's web output by marking
+a checkbox in the Django admin site.
+
+* Long table of contents entries are shrunk and expanded using Javascript. See
+http://pid.connectmv.com for an example.
+
+* When the user navigated back to the table of contents they are shown the
+page they came from; to help navigate large documents.
+
+* Support for mathematics and comments on equations: MathJax and pngmath
+extensions have been tested.
+
+* Simple, full text search of the document is available; a feature request is
+that other 3rd party search plugins can be used instead.
+
+* Search is accessible via a URL: ``http://example.com/docs/-search/search
+Term/AND/case=False`` will perform a case-insensitive search for the word
+``search`` and ``Term``. The ``AND`` can be replaced with ``OR``.
+
+* A customizable template is provided so that you can render the page within
+your existing website and surround the document content with other content.
+Templated items include:
 
 	* The main content area
 	* Sidebar containing the search box and the local ToC
 	* Page navigation elements
 	* Emails sent to users and the site administrators
 
-* Basic tracking of page hits (visits) and page popularity can be seen in the customized Django admin interface. (see code in the application's ``admin.py`` file to modify the admin interface).
+* Basic tracking of page hits (visits) and page popularity can be seen in the
+customized Django admin interface. (see code in the application's ``admin.py``
+file to modify the admin interface).
 
 Installation
 ============
 
-|ucomment| is not a standalone application.  It requires several other pieces of software to work.
+|ucomment| is not a standalone application.  It requires several other pieces
+of software to work.
 
 Dependencies
 ------------
 
-|ucomment| must run on a web server.  The following programs are assumed to be installed on that server:
+|ucomment| must run on a web server.  The following programs are assumed to be
+installed on that server:
 
 * Python 2.6 or better (it may work with Python 2.5, but it has not been tested)
 * Django 1.2.1, and its dependencies (earlier versions may work also)
@@ -83,19 +138,19 @@ Detailed installation instructions
 -----------------------------------
 
 #.	Create a Django project with ``django-admin.py startproject ucommentsite``
-	or use an existing project.	
+	or use an existing project.
 
-#.	Inside the Django project, clone the latest version of the |ucomment| 
+#.	Inside the Django project, clone the latest version of the |ucomment|
 	Django application:
-	
+
 	::
-	
+
 		hg clone http://bitbucket.org/kevindunn/ucommentapp
-		
+
 	After this step your Django project directory should like similar to:
-	
+
 	::
-	
+
 		/__init__.py
 		/manage.py
 		/settings.py
@@ -105,8 +160,8 @@ Detailed installation instructions
 #.	The next group of settings will change lines in your Django project's
 	``settings.py`` file.
 
-	*	Add the |ucomment| application to your Django project's 
-		``INSTALLED_APPS`` section. For example:			
+	*	Add the |ucomment| application to your Django project's
+		``INSTALLED_APPS`` section. For example:
 		::
 
 			INSTALLED_APPS = (
@@ -119,14 +174,14 @@ Detailed installation instructions
 
 	*	If this is a new Django project, then also edit the database settings.
 
-	*	Ensure that you have a valid email address under the ``ADMINS`` 
-		section.  |ucomment| will send an email to that address should 
+	*	Ensure that you have a valid email address under the ``ADMINS``
+		section.  |ucomment| will send an email to that address should
 		anything go wrong with the application.
 
-	*	The |ucomment| also requires that you set these 5 entries in the 
-		``settings.py`` file.  Examples are given so you can see what 
+	*	The |ucomment| also requires that you set these 5 entries in the
+		``settings.py`` file.  Examples are given so you can see what
 		is expected.
-		
+
 		::
 
 			EMAIL_HOST = 'smtp.example.com'
@@ -137,104 +192,104 @@ Detailed installation instructions
 
 	*	You should set your ``MEDIA_URL`` and ``MEDIA_ROOT`` settings to tell
 		Django where your media files are served from.
-	
-#.	Cut and paste all lines from ``ucommentapp/project-urls-append.py`` into the 
- 	bottom of your Django project's ``urls.py`` file.  You can of course edit
- 	the URL where the document will be hosted.  The default setting is:
+
+#.	Cut and paste all lines from ``ucommentapp/project-urls-append.py`` into
+ 	the bottom of your Django project's ``urls.py`` file.  You can of course
+	edit the URL where the document will be hosted.  The default setting is:
 
 	::
-	
+
 		(r'^document/', include('ucommentapp.urls')),
-		
+
 	If you would like to host the document at ``mydoc``, then change this to:
-	
+
 	::
-	
+
 		(r'^mydoc/', include('ucommentapp.urls')),
-		
+
 	Then the document will be available at ``http://example.com/mydoc/``. If
 	you prefer to host the documentation at the root of the website, then use:
-	
+
 	::
-	
+
 		(r'', include('ucommentapp.urls')),
-	
+
 	in your Django project's ``urls.py`` file.
 
 #.	If you changed the default settings in the previous step, then you **must**
  	also make these two changes:
 
-	#.	In the Javascript  file, ``ucommentapp/media/ucomment.js``: look for 
+	#.	In the Javascript  file, ``ucommentapp/media/ucomment.js``: look for
 		the line that refers to ``URL_VIEWS_PREFIX``, and adjust it.
-	
-	#.	Also change the line in ``ucommentapp/conf/settings.py``: look for 
+
+	#.	Also change the line in ``ucommentapp/conf/settings.py``: look for
 		the line that refers to ``url_views_prefix`` setting.
-	
-#.	Now it is time to create the database tables for this application.  Run the
-	following command from the Django project directory:
-	
+
+#.	Now it is time to create the database tables for this application.  Run
+	the following command from the Django project directory:
+
 	::
-	
+
 		manage.py syncdb
-		
-		
+
+
 #.	Next, spend some time editing the |ucomment| settings in
 	``ucommentapp/conf/settings.py``. There are several settings that you
 	need to adjust to let the application know about your document and how
 	you prefer users to interact with it.
-	
+
 	That settings file has many comments to help you along.
-	
+
 #.	Now you should be ready to publish your document for the first time.
 
-	*	Your document must be a valid `Sphinx document. 
+	*	Your document must be a valid `Sphinx document.
 		<http://sphinx.pocoo.org>`_
-		
-	*	You will need the Sphinx-generated ``conf.py`` file that you 
+
+	*	You will need the Sphinx-generated ``conf.py`` file that you
 		have likely customized, in addition to one or more ``.rst``
-		files, image files, and other content that make up your 
+		files, image files, and other content that make up your
 		document.
-		
+
 	*	That document must be under version control (this is a good thing
-		by the way, in case you haven't used version control).  
-		
-	*	|ucomment| only supports the Mercurial distributed version control 
+		by the way, in case you haven't used version control).
+
+	*	|ucomment| only supports the Mercurial distributed version control
 		system (DVCS) at the moment.  We definitely want to support other
-		DVCS's, and the code is set up to allow this to be added by 
+		DVCS's, and the code is set up to allow this to be added by
 		interesting developers.
-	
+
 	*	The repository containing your document can be on your webserver,
 		or available remotely on another server.
-		
+
 	*	You will need to adjust your ``conf.py`` file to add the
 		Sphinx extension provided by |ucomment|.  Add the following
 		lines, near the top of your ``conf.py`` file, anywhere after the
 		``extensions = [...]``  list.  Please **only edit the last line**
 		shown below.
-		
+
 		The last line points to your installation of |ucomment|, set in step 2
 		above.  Once it knows this location, it will be able to use all other
 		settings you specified earlier in your ``ucommentapp/conf/settings.py``
 		file.
-		
+
 		::
-		
+
 			# ucomment extension
 			sys.path.append(os.path.abspath(os.getcwd()))
 			extensions.append('ucomment-extension')
 			html_translator_class = 'ucomment-extension.ucomment_html_translator'
 
-			# Point to your Django application, which contains all 
+			# Point to your Django application, which contains all
 			# the other settings required.
 			ucomment = {}
 			ucomment['django_application_path'] = '/path/to/Django/project/ucommentapp'
-					
 
-#.	To publish your document, start your Django server, or, if you are in 
+
+#.	To publish your document, start your Django server, or, if you are in
 	development mode: run the built-in Django development server:
-		
+
 	::
-	
+
 		manage.py runserver
 
 #.	Visit the publish/update page for this application. The link is
@@ -244,95 +299,95 @@ Detailed installation instructions
 	Click on the link to publish/update the document.  This step calls
 	Sphinx, which should be installed on your webserver, to convert
 	the RST source files to HTML.
-	
+
 	That HTML is added to the Django database, and served to the
 	website visitors from Django.
-	
-	
+
+
 #.	On your webserver, and only after you have published the document
  	for the first time (previous step), you should go check the local
 	document repository.
-		
+
 	Go to the location on your webserver where you have the |ucomment|
 	application; e.g. ``... /my-django-project/ucommentapp/``
-	
+
 	You will see a new directory was created by |ucomment| called
-	``document_compile_area`` - this is the webserver's clone of your 
+	``document_compile_area`` - this is the webserver's clone of your
 	document, and the RST files are modified slightly when users comment
 	on your document.
-	
+
 	These changes must be pushed back, and must able to pushed back
 	automatically.
-	
+
 	For Mercurial, this simply requires that you add a few lines in the
 	``ucommentapp/document_compile_area/.hg/hgrc`` file.  Something
 	similar to:
-						
+
 		::
-		
+
 			[auth]
-		
+
 			document.prefix = hg.intevation.org/mercurial
 			document.username = foo
 			document.password = bar
 			document.schemes = http https
-			
-			[paths]		
-			
+
+			[paths]
+
 			default = ......
-			
-		For more details see `the Mercurial website 
+
+		For more details see `the Mercurial website
 		<http://www.selenic.com/mercurial/hgrc.5.html#auth>`_.
-		
+
 		If you use a remote server for your document's source,  please
-		ensure that you can get reasonable response times for pulling 
+		ensure that you can get reasonable response times for pulling
 		and pushing changes.
-	
-	If you make a change to the local RST files you should be able to 
+
+	If you make a change to the local RST files you should be able to
 	write ``hg push`` and those changes should be pushed back
 	without any further user intervention (e.g. entering usernames
-	and passwords).	
+	and passwords).
 
 #.	Once your document is published, it will be available at
 	``http://example.com/document/contents``
 
-	unless you used a different setting for ``master_doc`` in 
+	unless you used a different setting for ``master_doc`` in
 	your document's ``conf.py`` file.
 
 #.	If you HTML looks "ugly", it is because we haven't yet added the CSS
- 	and Javascript styling elements. Copy, or symlink, these files to 
-	the ``MEDIA_ROOT`` directory you specified in your Django 
+ 	and Javascript styling elements. Copy, or symlink, these files to
+	the ``MEDIA_ROOT`` directory you specified in your Django
 	``settings.py`` file.
 
 	::
-	
+
 		ucommentapp/media/ucomment.js
 		ucommentapp/media/ucomment.css
 		ucommentapp/media/*.png
 
 	Feel free to adjust any of the settings in the CSS or Javascript
 	files to match your sites' appearance.
-	
-#.	Now your web visitors should be able to view your document, and 
-	comment on any paragraph, figure, source code, tables, in other 
+
+#.	Now your web visitors should be able to view your document, and
+	comment on any paragraph, figure, source code, tables, in other
 	words, every node in your document is commentable.
-	
+
 Some extra steps
 ----------------
 
-Currently, there are a few extra steps you must take to get accurate 
+Currently, there are a few extra steps you must take to get accurate
 comments in your document related to source code listing, mathematical
 equations and tables.  If your document does not include these,
 then you may skip this step.
 
-**Note**: a request has been made to the Sphinx mailing list to have 
-these changes made to the Sphinx source code.  For now though you 
+**Note**: a request has been made to the Sphinx mailing list to have
+these changes made to the Sphinx source code.  For now though you
 must make them manually.
 
-You can view the `complete Mercurial changeset here 
+You can view the `complete Mercurial changeset here
 <https://bitbucket.org/kevindunn/sphinx/changeset/e8db58170475>`_.
 
-*	``sphinx/directives/code.py``, around line 64, add the line with 
+*	``sphinx/directives/code.py``, around line 64, add the line with
 	the ``+`` symbol:
 
 	::
@@ -345,11 +400,11 @@ You can view the `complete Mercurial changeset here
 
 
 
-*	``sphinx/directives/code.py``, around line 169, add the line with 
+*	``sphinx/directives/code.py``, around line 169, add the line with
 	the ``+`` symbol:
-	
+
 	::
-	
+
 				retnode = nodes.literal_block(text, text, source=filename)
 		        retnode.line = 1
 		+       retnode.attributes['line_number'] = self.lineno
@@ -359,9 +414,9 @@ You can view the `complete Mercurial changeset here
 		            retnode['linenos'] = True
 		        env.note_dependency(rel_filename)
 
-*	``sphinx/directives/other.py``, around line 239 add the line with 
+*	``sphinx/directives/other.py``, around line 239 add the line with
 	the ``+`` symbol:
-	
+
 	::
 
 		     def run(self):
@@ -369,7 +424,7 @@ You can view the `complete Mercurial changeset here
 		         node['spec'] = self.arguments[0]
 		+        node.line = self.lineno
 		         return [node]
-		
+
 *	``sphinx/ext/mathbase.py``, around line 73, add the 2 lines marked with
 	the ``+`` symbol:
 
@@ -383,7 +438,7 @@ You can view the `complete Mercurial changeset here
 		+		node.line = self.lineno
 		+		node.source = self.src
 		        return ret
-	        
+
 
 How the comment system works
 ============================
@@ -391,7 +446,7 @@ How the comment system works
 .. note::
 
 	It is highly recommended that you use the built-in Django admin interface
-	to view and understand how |ucomment| works.  You can see all comments, 
+	to view and understand how |ucomment| works.  You can see all comments,
 	document pages, people making the comments, etc.
 
 	You will need to edit your Django **project** (not application) ``urls.py``
@@ -401,13 +456,28 @@ How the comment system works
 Future features
 ===============
 
-* Mostly implemented already: Update a published document using the exiting pickle files (i.e. faster republishing)
-* Ability for reader to add notes to the document and resume adding/editing the notes when returning.
-* Allow for 3rd party search tools to be used instead of the built-in simple search: e.g. http://haystacksearch.org/, or Whoosh.
-* Add support for other distributed revision control systems (currently only Mercurial is supported).
-* Real-time preview of comments while the user is typing (via AJAX).  E.g. see the mathoverflow.net site.
-* Comment administration interface where the comment admin can approve/reject accumulated comments in one go
-* Add a Sphinx extension to enable a directive that generates Beamer slides inline in the RST.
+* Mostly implemented already: Update a published document using the exiting
+pickle files (i.e. faster republishing)
+
+* Ability for reader to add notes to the document and resume adding/editing
+the notes when returning.
+
+* Allow for 3rd party search tools to be used instead of the built-in simple
+search: e.g. http://haystacksearch.org/, or Whoosh.
+
+* Add support for other distributed revision control systems (currently only
+Mercurial is supported).
+
+* Real-time preview of comments while the user is typing (via AJAX).  E.g.
+see the mathoverflow.net site.
+
+* Comment administration interface where the comment admin can approve/reject
+accumulated comments in one go.
+
+* Add a Sphinx extension to enable a directive that generates Beamer slides
+inline in the RST.
+
 * DVCS wrappers for SVN, Bazaar and Git to be added.
+
 * Add inline comments as an option.
 
