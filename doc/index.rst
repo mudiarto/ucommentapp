@@ -63,59 +63,65 @@ implemented.  (I personally find inline commenting a bit distracting.)
 Bullet point feature summary
 -------------------------------
 
-* The document can be updated and republished on the web, and the original
-comments will correctly move to the updated location.
+*	The document can be updated and republished on the web, and the original
+	comments will correctly move to the updated location.
 
-* Long chapters or sections in the document can be optionally split into
-smaller subsections that each appear on their own HTML page.
+*	Long chapters or sections in the document can be optionally split into
+	smaller subsections that each appear on their own HTML page.
 
-* Links for ``Next``, ``Previous`` and ``Table of Contents`` help the reader
-navigate the various sections of the document.
+*	Links for ``Next``, ``Previous`` and ``Table of Contents`` help the reader
+	navigate the various sections of the document.
 
-* Comments are written in reStructuredText (allows for math, bullet points,
-tables, etc), and must be previewed by the reader before being submitted.
+*	Comments are written in reStructuredText (allows for math, bullet points,
+	tables, etc), and must be previewed by the reader before being submitted.
 
-* Once submitted, the comment administrator can approve or rejects new
-comments via email links; the comment submitter is informed of the decision by
-email also.
+*	Once submitted, the comment administrator can approve or rejects new
+	comments via email links; the comment submitter is informed of the decision
+	by email also.
 
-* Email alerts are sent to the site administrator if any errors occurs.
+*	Email alerts are sent to the site administrator if any errors occurs.
 
-* The settings for comment acceptance are flexible. For example, the default
-settings will auto-approve future comments from a poster who has submitted 3
-or more approved comments in the past.
+*	The settings for comment acceptance are flexible. For example, the default
+	settings will auto-approve future comments from a poster who has submitted
+	3 or more approved comments in the past.
 
-* Any comments can always be removed from the document's web output by marking
-a checkbox in the Django admin site.
+*	Any comments can always be removed from the document's web output by
+	marking a checkbox in the Django admin site.
 
-* Long table of contents entries are shrunk and expanded using Javascript. See
-http://pid.connectmv.com for an example.
+*	Long table of contents entries are shrunk and expanded using Javascript.
+	See http://pid.connectmv.com for an example.
 
-* When the user navigated back to the table of contents they are shown the
-page they came from; to help navigate large documents.
+*	When the user navigated back to the table of contents they are shown the
+	page they came from; to help navigate large documents.
 
-* Support for mathematics and comments on equations: MathJax and pngmath
-extensions have been tested.
+*	Support for mathematics and comments on equations: MathJax and pngmath
+	extensions have been tested.
 
-* Simple, full text search of the document is available; a feature request is
-that other 3rd party search plugins can be used instead.
+*	Simple, full text search of the document is available; a feature request
+	is that other 3rd party search plugins can be used instead.
 
-* Search is accessible via a URL: ``http://example.com/docs/-search/search
-Term/AND/case=False`` will perform a case-insensitive search for the word
-``search`` and ``Term``. The ``AND`` can be replaced with ``OR``.
+*	Search is accessible via a URL:
 
-* A customizable template is provided so that you can render the page within
-your existing website and surround the document content with other content.
-Templated items include:
+	``http://example.com/docs/-search/search Term/AND/case=False``
 
-	* The main content area
-	* Sidebar containing the search box and the local ToC
-	* Page navigation elements
-	* Emails sent to users and the site administrators
+	will perform a case-insensitive search for the word ``search`` and
+	``Term``. The ``AND`` can be replaced with ``OR``.
 
-* Basic tracking of page hits (visits) and page popularity can be seen in the
-customized Django admin interface. (see code in the application's ``admin.py``
-file to modify the admin interface).
+*	A customizable template is provided so that you can render the page within
+	your existing website and surround the document content with other content.
+	Templated items include:
+
+		* The main content area
+
+		* Sidebar containing the search box and the local ToC
+
+		* Page navigation elements
+
+		* Emails sent to users and the site administrators
+
+*	Basic tracking of page hits (visits) and page popularity can be seen in
+	the customized Django admin interface. (see code in the application's
+	``admin.py`` file to modify the admin interface).
 
 Installation
 ============
@@ -456,28 +462,28 @@ How the comment system works
 Future features
 ===============
 
-* Mostly implemented already: Update a published document using the exiting
-pickle files (i.e. faster republishing)
+*	Mostly implemented already: Update a published document using the exiting
+	pickle files (i.e. faster republishing)
 
-* Ability for reader to add notes to the document and resume adding/editing
-the notes when returning.
+*	Ability for reader to add notes to the document and resume adding/editing
+	the notes when returning.
 
-* Allow for 3rd party search tools to be used instead of the built-in simple
-search: e.g. http://haystacksearch.org/, or Whoosh.
+*	Allow for 3rd party search tools to be used instead of the built-in simple
+	search: e.g. http://haystacksearch.org/, or Whoosh.
 
-* Add support for other distributed revision control systems (currently only
-Mercurial is supported).
+*	Add support for other distributed revision control systems (currently only
+	Mercurial is supported).
 
-* Real-time preview of comments while the user is typing (via AJAX).  E.g.
-see the mathoverflow.net site.
+*	Real-time preview of comments while the user is typing (via AJAX).  E.g.
+	see the mathoverflow.net site.
 
-* Comment administration interface where the comment admin can approve/reject
-accumulated comments in one go.
+*	Comment administration interface where the comment admin can approve/reject
+	accumulated comments in one go.
 
-* Add a Sphinx extension to enable a directive that generates Beamer slides
-inline in the RST.
+*	Add a Sphinx extension to enable a directive that generates Beamer slides
+	inline in the RST.
 
-* DVCS wrappers for SVN, Bazaar and Git to be added.
+*	DVCS wrappers for SVN, Bazaar and Git to be added.
 
-* Add inline comments as an option.
+*	Add inline comments as an option (e.g. see Mercurial book website).
 
