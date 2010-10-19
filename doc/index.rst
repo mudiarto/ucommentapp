@@ -1,20 +1,25 @@
-Welcome to ucomment documentation's documentation!
-==================================================
-
 .. |ucomment| replace:: ``ucommentapp``
 
 What is |ucomment|
 ====================
 
-The value of a document published to the web can benefit tremendously from interaction with its readers.  Correcting typos, improving clarity, or enhancing the document with experiences and notes from the readers is helpful for other readers, and the original author(s).
+The value of a document published to the web can benefit tremendously from interaction with its readers.  Correcting typos, improving clarity, or enhancing the document with experiences and 
+notes from the readers is helpful for other readers, and the original author(s).
 
-|ucomment| is a Django application that allows for web-based commenting on a document. Unlike :ref:`other commenting systems <other-commenting-systems>`, |ucomment| was developed specifically for commenting on evolving documentation.  In other words, the comments are to be integrated (directly, or modified), into the document by the author, and then the revised document can be published again to the web. |ucomment| will work also with documents that are static.
+|ucomment| is a Django application that allows for web-based commenting on a document. Unlike :ref:`other commenting systems <other-commenting-systems>`, |ucomment| was developed specifically 
+for commenting on evolving documentation.  In other words, the comments are to be integrated (directly, or modified), into the document by the author, and then the revised document can be 
+published again to the web. |ucomment| will work also with documents that are static.
 
-|ucomment| requires the author write the document using `reStructuredText <http://en.wikipedia.org/wiki/ReStructuredText>`_ in a text file.  The `Sphinx documentation generator <http://sphinx.pocoo.org/latest/>`_ converts this to HTML output (and can be used to generate PDF, ebook, and other output formats also).  A distributed version control system (e.g. Mercurial) is used to track all revisions and comments added to the document.  Finally, Django is used to store all comments, page visits, user statistics, implement server-side search for the document, and comment administration can be done in the Django admin interface.
+|ucomment| requires the author write the document using `reStructuredText <http://en.wikipedia.org/wiki/ReStructuredText>`_ in a text file.  The `Sphinx documentation generator 
+<http://sphinx.pocoo.org/latest/>`_ converts this to HTML output (and can be used to generate PDF, ebook, and other output formats also).  A distributed version control system (e.g. Mercurial) 
+is used to track all revisions and comments added to the document.  Finally, Django is used to store all comments, page visits, user statistics, implement server-side search for the document, 
+and comment administration can be done in the Django admin interface.
 
-Once the document is published to the web, then user comments may be submitted anonymously (customizable).  Comments must be approved by a site administrator (customizable), via a single-click URL to either accept or reject the comment.  Once approved, comments will appear on the site with the next page.
+Once the document is published to the web, then user comments may be submitted anonymously (customizable).  Comments must be approved by a site administrator (customizable), via a single-click 
+URL to either accept or reject the comment.  Once approved, comments will appear on the site with the next page.
 
-The Sphinx documentation generator provides good-looking tabular output, mathematical equations, and so forth.  These can all be customized by the site administrator using Sphinx templates and cascading style 
+The Sphinx documentation generator provides good-looking tabular output, mathematical equations, and so forth.  These can all be customized by the site administrator using Sphinx templates and 
+cascading style 
 
 An example of |ucomment| in action can be seen at the online book, `Process Improvement using Data <http://pid.connectmv.com>`_, which is still a work in progress.
 
@@ -23,11 +28,15 @@ An example of |ucomment| in action can be seen at the online book, `Process Impr
 Other web-based commenting systems
 ------------------------------------
 
-Full credit for the idea of web-based commenting goes to various websites, particularly `The Django Book <http://djangobook.com/>`_ which was the strongest source of ideas for |ucomment|. That site shows comments in a sidebar, with speech bubbles either containing a number or no number.  These bubbles invite the user to click on them to view the existing comments, or add their own comment.
+Full credit for the idea of web-based commenting goes to various websites, particularly `The Django Book <http://djangobook.com/>`_ which was the strongest source of ideas for |ucomment|. That 
+site shows comments in a sidebar, with speech bubbles either containing a number or no number.  These bubbles invite the user to click on them to view the existing comments, or add their own 
+comment.
 
-The site for the book called `Mercurial: The Definitive Guide <http://hgbook.red-bean.com>`_ follows a similar idea, but uses inline commenting.  A link appears after every paragraph, figure, source code snippet, etc, that either shows "No comments" or "N comments", where N is some integer.  
+The site for the book called `Mercurial: The Definitive Guide <http://hgbook.red-bean.com>`_ follows a similar idea, but uses inline commenting.  A link appears after every paragraph, figure, 
+source code snippet, etc, that either shows "No comments" or "N comments", where N is some integer.  
 
-|ucomment| implements the type of comments as used on the Django Book website.  Inline commenting is easily added to |ucomment|, but is not currently implemented.  (I personally find inline commenting a bit distracting.)
+|ucomment| implements the type of comments as used on the Django Book website.  Inline commenting is easily added to |ucomment|, but is not currently implemented.  (I personally find inline 
+commenting a bit distracting.)
 
 Bullet point feature summary
 -------------------------------
@@ -44,7 +53,8 @@ Bullet point feature summary
 * When the user navigated back to the table of contents they are shown the page they came from; to help navigate large documents.
 * Support for  mathematics and comments on equations: MathJax and pngmath extensions have been tested.
 * Simple, full text search of the document is available; a feature request is that other 3rd party search plugins can be used instead. 
-* Search is accessible via a URL: ``http://example.com/docs/-search/search Term/AND/case=False`` will perform a case-insensitive search for the word ``search`` and ``Term``.  The ``AND`` can be replaced with ``OR``.
+* Search is accessible via a URL: ``http://example.com/docs/-search/search Term/AND/case=False`` will perform a case-insensitive search for the word ``search`` and ``Term``.  The ``AND`` can be 
+replaced with ``OR``.
 * A customizable template is provided so that you can render the page within your existing website and surround the document content with other content. Templated items include:
 
 	* The main content area
@@ -185,22 +195,79 @@ Detailed installation instructions
 		files, image files, and other content that make up your 
 		document.
 		
-	*	That document must under version control (this is a good thing
+	*	That document must be under version control (this is a good thing
 		by the way, in case you haven't used version control).  
 		
-	*	Currently only the Mercurial distributed version control system
-		is supported, though we definitely want to support other DVCS's.
+	*	|ucomment| only supports the Mercurial distributed version control 
+		system (DVCS) at the moment.  We definitely want to support other
+		DVCS's, and the code is set up to allow this to be added by 
+		interesting developers.
 	
 	*	The repository containing your document can be on your webserver,
-		or available remotely.
+		or available remotely on another server.
 		
-	*	|ucomment| will make a clone of your repository, local to the 
-		application, and add comments and changes to the document there.
-		These changes must be able to be pushed back to the original
-		source.  For Mercurial, this simply requires that you add,
-		to your local copy of the document, in the ``.hg/hgrc`` file, 
-		something similar to:
-				
+	*	You will need to adjust your ``conf.py`` file to add the
+		Sphinx extension provided by |ucomment|.  Add the following
+		lines, near the top of your ``conf.py`` file, anywhere after the
+		``extensions = [...]``  list.  Please **only edit the last line**
+		shown below.
+		
+		The last line points to your installation of |ucomment|, set in step 2
+		above.  Once it knows this location, it will be able to use all other
+		settings you specified earlier in your ``ucommentapp/conf/settings.py``
+		file.
+		
+		::
+		
+			# ucomment extension
+			sys.path.append(os.path.abspath(os.getcwd()))
+			extensions.append('ucomment-extension')
+			html_translator_class = 'ucomment-extension.ucomment_html_translator'
+
+			# Point to your Django application, which contains all 
+			# the other settings required.
+			ucomment = {}
+			ucomment['django_application_path'] = '/path/to/Django/project/ucommentapp'
+					
+
+#.	To publish your document, start your Django server, or, if you are in 
+	development mode: run the built-in Django development server:
+		
+	::
+	
+		manage.py runserver
+
+#.	Visit the publish/update page for this application. The link is
+	``http://example.com/document/_admin``, replacing the ``document``
+	part if you adjusted settings in step 5 above.
+
+	Click on the link to publish/update the document.  This step calls
+	Sphinx, which should be installed on your webserver, to convert
+	the RST source files to HTML.
+	
+	That HTML is added to the Django database, and served to the
+	website visitors from Django.
+	
+	
+#.	On your webserver, and only after you have published the document
+ 	for the first time (previous step), you should go check the local
+	document repository.
+		
+	Go to the location on your webserver where you have the |ucomment|
+	application; e.g. ``... /my-django-project/ucommentapp/``
+	
+	You will see a new directory was created by |ucomment| called
+	``document_compile_area`` - this is the webserver's clone of your 
+	document, and the RST files are modified slightly when users comment
+	on your document.
+	
+	These changes must be pushed back, and must able to pushed back
+	automatically.
+	
+	For Mercurial, this simply requires that you add a few lines in the
+	``ucommentapp/document_compile_area/.hg/hgrc`` file.  Something
+	similar to:
+						
 		::
 		
 			[auth]
@@ -216,47 +283,17 @@ Detailed installation instructions
 			
 		For more details see `the Mercurial website 
 		<http://www.selenic.com/mercurial/hgrc.5.html#auth>`_.
-			
-	*	You will need to adjust your ``conf.py`` file to add the
-		Sphinx extension provided by |ucomment|.  Add the following
-		lines:
 		
-		::
-		
-			# ucomment extension
-			sys.path.append(os.path.abspath(os.getcwd()))
-			extensions.append('ucomment-extension')
-			html_translator_class = 'ucomment-extension.ucomment_html_translator'
-
-			# Point to your Django application, which contains all 
-			# the other settings required.
-			ucomment = {}
-			ucomment['django_application_path'] = '/path/to/Django/project/ucommentapp'
-			
-		The last line points to your installation of |ucomment|, set in step 2
-		above.  Once it knows this location, it will be able to use all other
-		settings you specified earlier in your ``ucommentapp/conf/settings.py``
-		file.
-
-#.	To publish your document, start your Django server, or, if you are in 
-	development mode: run the built-in Django development server:
+		If you use a remote server for your document's source,  please
+		ensure that you can get reasonable response times for pulling 
+		and pushing changes.
 	
-	::
-	
-		manage.py runserver
+	If you make a change to the local RST files you should be able to 
+	write ``hg push`` and those changes should be pushed back
+	without any further user intervention (e.g. entering usernames
+	and passwords).	
 
-#.	Visit the publish/update page for this application. The link is
-	``http://example.com/document/_admin``, replacing the ``document``
-	part if you adjusted settings in step 5 above.
-
-	Click on the link to publish/update the document.  This step calls
-	Sphinx, which should be installed on your webserver, to convert
-	the RST source files to HTML.
-	
-	That HTML is added to the Django database, and served to the
-	website visitors from Django.
-
-#.	Typically the root page for the document will be at
+#.	Once your document is published, it will be available at
 	``http://example.com/document/contents``
 
 	unless you used a different setting for ``master_doc`` in 
@@ -292,6 +329,8 @@ then you may skip this step.
 these changes made to the Sphinx source code.  For now though you 
 must make them manually.
 
+You can view the `complete Mercurial changeset here 
+<https://bitbucket.org/kevindunn/sphinx/changeset/e8db58170475>`_.
 
 *	``sphinx/directives/code.py``, around line 64, add the line with 
 	the ``+`` symbol:
@@ -355,8 +394,8 @@ How the comment system works
 	to view and understand how |ucomment| works.  You can see all comments, 
 	document pages, people making the comments, etc.
 
-	You will need to edit your Django PROJECT's ``urls.py`` and ``settings.py``
-	files to enable the admin interface.
+	You will need to edit your Django **project** (not application) ``urls.py``
+	and ``settings.py`` files to enable the admin interface.
 
 
 Future features
@@ -371,3 +410,4 @@ Future features
 * Add a Sphinx extension to enable a directive that generates Beamer slides inline in the RST.
 * DVCS wrappers for SVN, Bazaar and Git to be added.
 * Add inline comments as an option.
+
