@@ -233,6 +233,7 @@ class Comment(models.Model):
     # Was approved, but now removed: True           True           '#'
     is_approved = models.BooleanField()
     is_rejected = models.BooleanField()  # Given by symbol '#'
+    comment_used = models.BooleanField()  # Future: True if comment is "used"
 
     class Meta:
         ordering = ("-datetime_submitted",)
