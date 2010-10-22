@@ -776,8 +776,7 @@ def commit_comment_to_sources(reference, node, func, additional=None):
     try:
 
         # Get the RST file to the revision required for adding the comment:
-        revision_reqd = int(reference.revision_changeset.split(':')[0])
-        hex_str = update_local_repo(revision_reqd)
+        hex_str = update_local_repo(reference.revision_changeset)
 
         f_handle = file(reference.file_name, 'r')
         RST_source = f_handle.readlines()

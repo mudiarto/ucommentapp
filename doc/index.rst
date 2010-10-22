@@ -4,8 +4,8 @@ What is |ucomment|
 ====================
 
 The value of a document published to the web can benefit tremendously from
-interaction with its readers.  Correcting typos, improving clarity, or
-enhancing the document with experiences and notes from the readers is helpful
+interaction with its readers. Their help with correcting typos, improving
+clarity, or enhancing the document with their experiences and notes is helpful
 for other readers, and the original author(s).
 
 |ucomment| is a Django application that allows for web-based commenting on a
@@ -311,8 +311,8 @@ Detailed installation instructions
 
 
 #.	On your webserver, and only after you have published the document
- 	for the first time (previous step), you should go check the local
-	document repository.
+ 	for the first time (previous step), you should go check if the local
+	document repository can be pushed back automatically.
 
 	Go to the location on your webserver where you have the |ucomment|
 	application; e.g. ``... /my-django-project/ucommentapp/``
@@ -322,8 +322,8 @@ Detailed installation instructions
 	document, and the RST files are modified slightly when users comment
 	on your document.
 
-	These changes must be pushed back, and must able to pushed back
-	automatically.
+	These changes that will be made to the document are to be pushed back,
+	and this must be able to be done automatically.
 
 	For Mercurial, this simply requires that you add a few lines in the
 	``ucommentapp/document_compile_area/.hg/hgrc`` file.  Something
