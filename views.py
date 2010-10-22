@@ -193,6 +193,17 @@ def get_site_url(request, add_path=True, add_views_prefix=False):
             out = '/'
     return out
 
+def get_IP_address(request):
+    """
+    Returns the visitor's IP address as a string.
+    """
+    # Catchs the case when the user is on a proxy
+    ip = request.META['HTTP_X_FORWARDED_FOR']
+    if ip == "" or ip.lower() == 'unkown':
+        # User is not on a proxy
+        ip = request.META['REMOTE_ADDR']
+    return ip
+
 # Comment preview and submission functions
 # ----------------------------------------
 class CommentForm(forms.Form):
@@ -406,7 +417,7 @@ def create_poster(request):
 
     # Get the poster entry, or create a new one.  Always create a new poster
     # entry for anonymous posters.
-    c_IP_address = request.META['REMOTE_ADDR']
+    c_IP_address = get_IP_address(request)
     c_UA_string = request.META['HTTP_USER_AGENT'][0:499]  # avoid DB overflow
     p_default = {'name' : p_name,
                  'long_name': p_name + '__' + c_IP_address + '__' + c_UA_string,
@@ -541,7 +552,7 @@ def submit_and_store_comment(request):
 
     # Create the comment object
     c_datetime_submitted = c_datetime_approved = datetime.datetime.now()
-    c_IP_address = request.META['REMOTE_ADDR']
+    c_IP_address = get_IP_address(request)
     c_UA_string = request.META['HTTP_USER_AGENT'][0:499]  # avoid DB overflow
     c_approval_code = create_codes_ID(conf.approval_code_length)
     c_rejection_code = create_codes_ID(conf.approval_code_length)
@@ -1323,7 +1334,7 @@ def render_page_for_web(page, request, search_value=''):
 
     # Create a page hit entry in the database
     page_hit = models.Hit(UA_string = request.META['HTTP_USER_AGENT'],
-                   IP_address = request.META['REMOTE_ADDR'],
+                   IP_address = get_IP_address(request),
                    page_hit = page.link_name, # could use page.html_title?
                    referrer = referrer_str)
     page_hit.save()
@@ -1437,6 +1448,7 @@ def display_page(page_requested):
             # this page.
             item = models.Page.objects.filter(link_name=link_name + '/index')
         else:
+            # TODO(KGD): return a 404 page template: how to do that?
             log_file.debug('Unknown page requested: ' + link_name)
             return HttpResponse('Page not found', status=404)
 
@@ -2398,7 +2410,7 @@ def admin_signin(request):
         return HttpResponse(msg, status=200)
     elif request.method == 'GET':
         log_file.info('Entering the admin section; IP = %s' % \
-                                                (request.META['REMOTE_ADDR']))
+                                                (get_IP_address(request)))
         context = {}
         context.update(csrf(request))
         msg = ( '<p>Please sign-in first with your Django (admin) credentials:'
