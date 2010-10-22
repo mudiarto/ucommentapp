@@ -1050,8 +1050,11 @@ def ucomment_builder_init_function(app):
     # directives, or the file that is the main TOC.  Also, initializes the
     # 'split_sources' and 'split_files' settings to useful values
     for name in list(app.env.found_docs):
+
+        # Use app.config.source_suffix: i.e. use the original suffix for
+        # the document's files.
         fullname = os.path.join(app.env.srcdir,
-                                           name + app.env.config.source_suffix)
+                                           name + app.config.source_suffix)
 
         conf['split_sources'][fullname] = fullname
 

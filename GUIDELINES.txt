@@ -1,3 +1,23 @@
+Notes on splitting
+===================
+
+* Any file with a toctree directive in it cannot be commented on, especially if
+  the toctree entry expands into multiple lines.  Maybe we can fix this later.
+  But for now its not that big of a deal.
+
+* If you use the `` `` directives at the start of a file that is split, then
+  these replacements will only take place in the first split.  The remedy is
+  to add all replacements in your ``conf.py`` file.  For example:
+
+  ::
+
+	rst_epilog = """
+	.. |x| replace:: :math:`\mathrm{x}`
+	.. |y| replace:: :math:`\mathrm{y}`
+	"""
+
+
+==================
 * Always start tables with the table directive
 
   NOT ADVISED
@@ -13,7 +33,7 @@
   ----------   --- --- --- --- --- --- --- --- ---
   **Case B**   338 470 558 426 733 539 240 628 517
   ==========   === === === === === === === === ===
-  
+
 
   REQUIRED
   --------
