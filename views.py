@@ -488,6 +488,11 @@ def submit_and_store_comment(request):
     if len(ref):
         c_reference = ref[0]
     else:
+        # One possibility to consider is to create the comment reference
+        # right here.  However, it is quite hard to do this properly, because
+        # do not know all the field properties for a CommentReference object:
+        # such as the line number, page_link_name, node_type, and others.
+
         # This will only occur in the exceptional case when the document
         # has been republished, and the user still has a previous version in
         # their browser.  Hence the page reload request.
@@ -1660,9 +1665,10 @@ def call_sphinx_to_publish():
     build_dir = os.path.abspath(conf.local_repo_physical_dir+os.sep + '_build')
     ensuredir(build_dir)
 
-    # TODO(KGD): make this setting a choice in the web
-    FRESHENV = False
-
+    # TODO(KGD): make this setting a choice in the web before publishing
+    # Note: FRESHENV: if True: we must delete all previous comment references,
+    # to avoid an accumulation of references in the database.
+    conf.use_freshenv = False
     try:
         app = Sphinx(srcdir=conf.local_repo_physical_dir,
                      confdir=conf.local_repo_physical_dir,
@@ -1671,7 +1677,7 @@ def call_sphinx_to_publish():
                      buildername = 'pickle',
                      status = status,
                      warning = warning,
-                     freshenv = FRESHENV,
+                     freshenv = conf.use_freshenv,
                      warningiserror = False,
                      tags = [])
 
@@ -1719,8 +1725,7 @@ def call_sphinx_to_publish():
             log_file.warn(('PUBLISH: could not successfully publish the text-'
                            'based version of the document (used for searching).'
                            'Error reported = %s') % str(e))
-            # TODO(KGD):
-            # defer clean-up until after the RST files are used as search
+            # TODO(KGD): defer clean-up to after RST files are used as search
 
         log_file.debug('PUBLISH: Sphinx compiling TEXT version successfully.')
         if warning.tell():
@@ -1956,17 +1961,20 @@ def commit_updated_document_to_database(app):
 
     log_file.debug('PUBLISH: pages saved to the database.')
 
-    # 2. Next, deal with the comment references
+    # Next, deal with the comment references
     # ---------------------------------------------
     to_update = []
     to_remove = []
     orphans = []
     prior_references = models.CommentReference.objects.all()
-    for item in prior_references:
-        orphans.append(item.comment_root)
+
+    # Only if we used a fresh environment.  Because then all the comment
+    # references are regenerated.
+    if conf.use_freshenv:
+        for item in prior_references:
+            orphans.append(item.comment_root)
 
     for item in sphinx_settings['comment_refs']:
-
         # First check whether this comment reference exists in the database;
         # If not, add it.  If it does exist, add it to the list of references
         # to update next.
@@ -2006,9 +2014,11 @@ def commit_updated_document_to_database(app):
         # ucomment directives around, even to a different file, the comments
         # associated with that reference will still appear at the new location.
 
-    # Orphans occur if the auto removed the ucomment directive from the RST
-    # source.  They are problematic only if they happen to have an associated
-    # ``Comment`` object in the database (expected).
+    # Orphans occur if the user removed the ucomment directive from the RST
+    # source.
+    # They are problematic only if they happen to have an associated ``Comment``
+    # object in the database (which is expected, since a CommentReference is
+    # created the same time ).
     for item in orphans[:]:
         # Remove comment references from the list that don't have comments.
         ref = prior_references.filter(comment_root=item)[0]
@@ -2347,13 +2357,11 @@ def search_document(request, search_terms='', search_type='AND',
     for word in search_for:
         # Filter out certain stop words
         if word not in STOP_WORDS:
-            # TODO(KGD): Change this to "search_text__icontains" later on
-            # once the ``search_text`` field is populated.
             if with_case:
-                pages = models.Page.objects.filter(body__contains=word)
+                pages = models.Page.objects.filter(search_text__icontains=word)
             else:
                 pages = models.Page.objects.filter(
-                                                  body__icontains=word.lower())
+                                           search_text__icontains=word.lower())
             n_search_words += 1
             for page in pages:
                 results[page].append(word)

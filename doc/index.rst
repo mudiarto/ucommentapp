@@ -486,6 +486,46 @@ Detailed comments on how |ucomment| works will be coming soon.
 *	How the Javascript code interacts with the HTML to display the comments;
 	and how the Django server on the backend serves the comments.
 
+
+Comment references
+------------------
+
+*	Comment references are created again when the site is republished.  To avoid
+	accumulation of references in the DB, the previous references are deleted.
+
+	However, if FRESHENV is False, then we should not delete the references.
+	What this implies however, is that from time-to-time, the author should do
+	a republish with a freshenv, so that unused comment references are cleaned.
+
+Orphaned comments
+-----------------
+
+A comment is not removed from the Django database when the comment reference
+is simply removed in the RST source code by the author (since the author could
+have made a mistake).  Further, keeping the comment in the database allows one
+to bring the comment back, or at the least, it is there for historical purposes.
+
+But all comments must have a valid comment reference.  So if comments without
+
+
+This is intended.
+
+The removed comment reference in the RST file could be a mistake, or intentiona
+
+However these comments
+
+# These arise when comment references are removed from the text by the
+        # author.  But, these references still have comments associated with
+        # them in the database, but are not made available on any page,
+        # nor do they have a valid comment reference.
+
+
+
+
+Comments (more specifically, comment references) that appear in the database,
+but which are not used in the document are called orphaned comments, or
+orphaned comment references.
+
 Future features
 ===============
 
