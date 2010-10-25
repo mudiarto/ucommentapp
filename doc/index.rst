@@ -6,8 +6,6 @@ interaction with its readers. Their help with correcting typos, improving
 clarity, or enhancing the document with their experiences and notes is helpful
 for other readers, and the original author(s).
 
-.. ucomment:: ytFxpb: 3X, Wz,
-
 |ucomment| is a Django application that allows for web-based commenting on a
 document. Unlike :ref:`other commenting systems <other-commenting-systems>`,
 |ucomment| was developed specifically for commenting on evolving documentation.
@@ -149,10 +147,10 @@ installed on that server:
 Detailed installation instructions
 -----------------------------------
 
-#.	Create a Django project with ``django-admin.py startproject ucommentsite``
+1.	Create a Django project with ``django-admin.py startproject ucommentsite``
 	or use an existing project.
 
-#.	Inside the Django project, clone the latest version of the |ucomment|
+2.	Inside the Django project, clone the latest version of the |ucomment|
 	Django application:
 
 	::
@@ -169,7 +167,7 @@ Detailed installation instructions
 		/ucommentapp/   <--- subdirectory of files just cloned above
 		/urls.py
 
-#.	The next group of settings will change lines in your Django project's
+3.	The next group of settings will change lines in your Django project's
 	``settings.py`` file.
 
 	*	Add the |ucomment| application to your Django project's
@@ -205,7 +203,7 @@ Detailed installation instructions
 	*	You should set your ``MEDIA_URL`` and ``MEDIA_ROOT`` settings to tell
 		Django where your media files are served from.
 
-#.	Cut and paste all lines from ``ucommentapp/project-urls-append.py`` into
+4.	Cut and paste all lines from ``ucommentapp/project-urls-append.py`` into
  	the bottom of your Django project's ``urls.py`` file.  You can of course
 	edit the URL where the document will be hosted.  The default setting is:
 
@@ -229,7 +227,7 @@ Detailed installation instructions
 
 	in your Django project's ``urls.py`` file.
 
-#.	If you changed the default settings in the previous step, then you **must**
+5.	If you changed the default settings in the previous step, then you **must**
  	also make these two changes:
 
 	#.	In the Javascript  file, ``ucommentapp/media/ucomment.js``: look for
@@ -238,7 +236,7 @@ Detailed installation instructions
 	#.	Also change the line in ``ucommentapp/conf/settings.py``: look for
 		the line that refers to the ``url_views_prefix`` setting.
 
-#.	Now it is time to create the database tables for this application.  Run
+6.	Now it is time to create the database tables for this application.  Run
 	the following command from the Django project directory:
 
 	::
@@ -246,14 +244,14 @@ Detailed installation instructions
 		manage.py syncdb
 
 
-#.	Next, spend some time editing the |ucomment| settings in
+7.	Next, spend some time editing the |ucomment| settings in
 	``ucommentapp/conf/settings.py``. There are several settings that you
 	need to adjust to let the application know about your document and how
 	you prefer users to interact with it.
 
 	That settings file has many comments to help you along.
 
-#.	Now you should be ready to publish your document for the first time.
+8.	Now you should be ready to publish your document for the first time.
 
 	*	Your document files must be a valid `Sphinx markup
 		<http://sphinx.pocoo.org/latest/rest.html>`_.
@@ -300,14 +298,14 @@ Detailed installation instructions
 		settings you specified earlier in your ``ucommentapp/conf/settings.py``
 		file.
 
-#.	To publish your document, start your Django server, or, if you are in
+9.	To publish your document, start your Django server, or, if you are in
 	development mode: run the built-in Django development server:
 
 	::
 
 		manage.py runserver
 
-#.	Visit the publish/update page for this application. The link is
+10.	Visit the publish/update page for this application. The link is
 	``http://example.com/document/_admin``.  Obviously you should replace
 	``example.com`` with you own site address, and also replace the ``document``
 	part only if you adjusted settings in step 4 and 5 above.
@@ -319,7 +317,7 @@ Detailed installation instructions
 	That HTML is added to the Django database, and served to the
 	website visitors from Django.
 
-#.	On your webserver, and only after you have published the document
+11.	On your webserver, and only after you have published the document
  	for the first time (previous step), you should go check the local
 	document repository.
 
@@ -365,13 +363,13 @@ Detailed installation instructions
 	write ``hg push`` and that change should be pushed back to the source repo
 	without any user intervention (e.g. entering usernames and passwords).
 
-#.	Once your document is published, it will be available at
+12.	Once your document is published, it will be available at
 	``http://example.com/document/contents``
 
 	unless you used a different setting for ``master_doc`` in
 	your document's ``conf.py`` file.
 
-#.	If you HTML looks "ugly", it is because we haven't yet added the CSS
+13.	If you HTML looks "ugly", it is because we haven't yet added the CSS
  	and Javascript styling elements. Copy, or symlink, these files to
 	the ``MEDIA_ROOT`` directory you specified in your Django
 	``settings.py`` file.
@@ -385,7 +383,14 @@ Detailed installation instructions
 	Feel free to adjust any of the settings in the CSS or Javascript
 	files to match your sites' appearance.
 
-#.	Now your web visitors should be able to view your document, and
+14.	If are running |ucomment| at the root of your website, i.e. you adjusted
+	the ``url_views_prefix`` setting in step 4 and 5; then you will also want
+	to set your webserver to serve the ``favicon.ico`` and ``robots.txt`` files.
+	See `the Django documentation
+	<http://docs.djangoproject.com/en/1.0/howto/deployment/modwsgi/>`_ for
+	details.
+
+15.	Now your web visitors should be able to view your document, and
 	comment on any paragraph, figure, source code, tables, in other
 	words, every node in your document is commentable.
 

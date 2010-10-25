@@ -198,7 +198,7 @@ def get_IP_address(request):
     Returns the visitor's IP address as a string.
     """
     # Catchs the case when the user is on a proxy
-    ip = request.META['HTTP_X_FORWARDED_FOR']
+    ip = request.META.get('HTTP_X_FORWARDED_FOR', '')
     if ip == "" or ip.lower() == 'unkown':
         # User is not on a proxy
         ip = request.META['REMOTE_ADDR']
