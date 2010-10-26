@@ -1,3 +1,15 @@
+Document structure
+====================
+
+Single page document:
+
+  * Should be in a single .RST file, and that file should be set as "master_doc"
+	in ``conf.py``.
+
+* Two files: contents.rst (with a toctree that calls the single page doc)
+* Other file: XXXXX.rst (any names, except index.rst: this seems to be a
+	reserved Sphinx name)
+
 Notes on splitting
 ===================
 

@@ -190,7 +190,7 @@ def get_site_url(request, add_path=True, add_views_prefix=False):
         if conf.url_views_prefix:
             out += '/' + conf.url_views_prefix + '/'
         else:
-            out = '/'
+            out += '/'
     return out
 
 def get_IP_address(request):
@@ -198,10 +198,16 @@ def get_IP_address(request):
     Returns the visitor's IP address as a string.
     """
     # Catchs the case when the user is on a proxy
-    ip = request.META.get('HTTP_X_FORWARDED_FOR', '')
-    if ip == "" or ip.lower() == 'unkown':
-        # User is not on a proxy
-        ip = request.META['REMOTE_ADDR']
+    try:
+        ip = request.META['HTTP_X_FORWARDED_FOR']
+    except KeyError:
+        pass
+    else:
+        # HTTP_X_FORWARDED_FOR is a comma-separated list; take first IP:
+        ip = real_ip.split(',')[0]
+
+    if ip == '' or ip.lower() == 'unkown':
+        ip = request.META['REMOTE_ADDR']      # User is not on a proxy
     return ip
 
 # Comment preview and submission functions
