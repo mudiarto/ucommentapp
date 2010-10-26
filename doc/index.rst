@@ -507,7 +507,6 @@ to bring the comment back, or at the least, it is there for historical purposes.
 
 But all comments must have a valid comment reference.  So if comments without
 
-
 This is intended.
 
 The removed comment reference in the RST file could be a mistake, or intentiona
@@ -520,14 +519,18 @@ However these comments
         # nor do they have a valid comment reference.
 
 
-
-
 Comments (more specifically, comment references) that appear in the database,
 but which are not used in the document are called orphaned comments, or
 orphaned comment references.
 
 Future features
 ===============
+
+*	Nodes that show source code, ending in a double-colon ``::`` cannot
+	be commented on at the moment.  This is the highest priority next feature.
+
+*	Rejecting comments is still to be handled, coupled with a web-based tool
+	to send a reason along with the rejection email to the comment submitter.
 
 *	Mostly implemented already: Update a published document using the exiting
 	pickle files (i.e. faster republishing).  Still needs some testing.

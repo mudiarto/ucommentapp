@@ -288,7 +288,7 @@ valuable contribution to the site.
 {{settings.number_before_auto_approval}} approved comments, any future comments
 you post will be automatically approved.
 
-<p>Thanks again, the <a href="http://example.com">Example, Inc.</a> team.
+<p>Thanks again, from <a href="http://example.com">Example, Inc.</a>.
 '''
 
 # Email web user once their comment is approved (mentions number of approved
@@ -318,7 +318,7 @@ the following reason(s):
 {{rejected_extra_info}}
 {% endif %}
 
-Thanks for your contribution - the http://example.com team.
+The http://example.com team.
 '''
 
 # The web-based rejection interface will allow you to select one or more of the
