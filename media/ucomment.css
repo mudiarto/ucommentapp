@@ -79,6 +79,7 @@
 .ucomment-show-hide-ucomments{
     float: left;
 	width: 50%;
+	font-style: italic;
 }
 .ucomment-nav-links{
 	position: absolute;

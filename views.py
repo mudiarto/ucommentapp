@@ -201,7 +201,7 @@ def get_IP_address(request):
     try:
         ip = request.META['HTTP_X_FORWARDED_FOR']
     except KeyError:
-        pass
+        ip = ''
     else:
         # HTTP_X_FORWARDED_FOR is a comma-separated list; take first IP:
         ip = ip.split(',')[0]
