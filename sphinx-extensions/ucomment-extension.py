@@ -945,9 +945,10 @@ def copy_static_content(app, exception):
     copy_command = ['cp', '-ru', src+os.sep+'.', conf['MEDIA_ROOT']]
     try:
         subprocess.check_call(copy_command, stdout=subprocess.PIPE, cwd='.')
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
         app.builder.warn('Unable to copy over the image data to the '
-                        'static web-directory')
+                        'static web-directory: return code = %s' % \
+                        str(e.returncode))
         return
 
     # TODO(KGD): consider converting images from PNG to JPG; rewrite URL's also
@@ -978,17 +979,17 @@ def ucomment_builder_init_function(app):
                            user_conf['django_application_path'].rstrip(os.sep))
         sys.path.extend([parent_name])
 
-        # Import the ``settings/conf.py`` settings file (Django-like settings)
-        temp = __import__(app_name + '.conf.settings', None, None,
-                                   ['conf.settings'])
-        for key, value in temp.__dict__.iteritems():
-            # First, load all settings from ``settings/conf.py`` file
-            if key[0:2] != '__':
-                conf[key] = value
+        ## Import the ``settings/conf.py`` settings file (Django-like settings)
+        #temp = __import__(app_name + '.conf.settings', None, None,
+                                   #['conf.settings'])
+        #for key, value in temp.__dict__.iteritems():
+            ## First, load all settings from ``settings/conf.py`` file
+            #if key[0:2] != '__':
+                #conf[key] = value
 
-            # Setting is in user's conf.py file take preference:
-            if key in user_conf:
-                conf[key] = user_conf[key]
+            ## Setting is in user's conf.py file take preference:
+            #if key in user_conf:
+                #conf[key] = user_conf[key]
     else:
         raise ExtensionError(('The ucomment extension requires that you specify'
                                " the ``ucomment['django_application_path']`` "
@@ -1026,8 +1027,19 @@ def ucomment_builder_init_function(app):
 
     # Ensure these settings exist, otherwise put default values
     # ----------------------------------------------------------
+    # This allows us to compile the RST document from the command line using
+    # ``sphinx-build -b html . _build``, or something similar: used in debugging
     if 'skip_nodes_in' not in conf:
         conf['skip_nodes_in'] = ['']
+    if 'section_div' not in conf:
+        conf['section_div'] = ''
+    if 'min_length_div' not in conf:
+        conf['min_length_div'] = 3
+    if 'root_node_length' not in conf:
+        conf['root_node_length'] = 6
+    if 'MEDIA_ROOT' not in conf:
+        conf['MEDIA_ROOT'] = os.path.join(app.builder.outdir, '_images')
+
     conf['skip_nodes_in'] = set(conf['skip_nodes_in'])
 
     # Regular expression for ucomment lines: adds them to the list of used nodes
