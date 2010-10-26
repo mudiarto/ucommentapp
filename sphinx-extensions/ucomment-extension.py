@@ -980,16 +980,16 @@ def ucomment_builder_init_function(app):
         sys.path.extend([parent_name])
 
         ## Import the ``settings/conf.py`` settings file (Django-like settings)
-        #temp = __import__(app_name + '.conf.settings', None, None,
-                                   #['conf.settings'])
-        #for key, value in temp.__dict__.iteritems():
-            ## First, load all settings from ``settings/conf.py`` file
-            #if key[0:2] != '__':
-                #conf[key] = value
+        temp = __import__(app_name + '.conf.settings', None, None,
+                                   ['conf.settings'])
+        for key, value in temp.__dict__.iteritems():
+            # First, load all settings from ``settings/conf.py`` file
+            if key[0:2] != '__':
+                conf[key] = value
 
-            ## Setting is in user's conf.py file take preference:
-            #if key in user_conf:
-                #conf[key] = user_conf[key]
+            # Setting is in user's conf.py file take preference:
+            if key in user_conf:
+                conf[key] = user_conf[key]
     else:
         raise ExtensionError(('The ucomment extension requires that you specify'
                                " the ``ucomment['django_application_path']`` "
