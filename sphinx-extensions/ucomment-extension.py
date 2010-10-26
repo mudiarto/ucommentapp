@@ -292,7 +292,10 @@ class ucomment_html_translator(SmartyPantsHTMLTranslator):
                 # database.
                 node_type = node.tagname
                 if node.parent.tagname == 'list_item':
-                    node_type = 'list_item'
+                    node.parent._ucomment_num_nodes += 1
+                    if node.parent._ucomment_num_nodes == 1:
+                        # Only the first node is marked as a list item
+                        node_type = 'list_item'
 
                 self.ucomment['comment_refs'].append(CommentReference(
                                 self.ucomment['split_sources'][node.source],
@@ -394,6 +397,11 @@ class ucomment_html_translator(SmartyPantsHTMLTranslator):
             self.extend_node_attrs(node, bias=0)
 
         self.visit_list_item_original(self, node)
+
+        # For compound list items (e.g. bullet point with two paragraphs):
+        # the second paragraph should be recorded as a paragraph, not as
+        # a `list_item`
+        node._ucomment_num_nodes = 0
 
 
     def visit_term(self, node):
@@ -894,7 +902,10 @@ def split_rst_files(app, conf, remaining_files):
 
                 #base = posixpath.normpath(posixpath.join('/' + name, '..'))[1:]
                 for src_file in entry[0]:
-                    remove = os.path.commonprefix([name, src_file])
+                    if name.find(os.sep) > 0:
+                        remove = os.path.commonprefix([name, src_file])
+                    else:
+                        remove = ''
                     if remove != '':
                         short = ''.join(list(src_file.partition(remove)[2:]))
                     else:
@@ -982,9 +993,14 @@ def ucomment_builder_init_function(app):
         ## Import the ``settings/conf.py`` settings file (Django-like settings)
         temp = __import__(app_name + '.conf.settings', None, None,
                                    ['conf.settings'])
+
+        # If we run from a freshenv (fresh environment), then these are the
+        # same dictionaries; we need to take some extra precaution
+
+        same_id = id(conf) == id(user_conf)
         for key, value in temp.__dict__.iteritems():
             # First, load all settings from ``settings/conf.py`` file
-            if key[0:2] != '__':
+            if key[0:2] != '__' and not(same_id):
                 conf[key] = value
 
             # Setting is in user's conf.py file take preference:

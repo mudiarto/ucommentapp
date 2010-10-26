@@ -1064,7 +1064,13 @@ def update_RST_with_comment(comment_ref, comment_node, RST_source):
     #   |#.  Next list item              |#.  Next list item
 
     if comment_ref.node_type == 'list_item':
-        # 1. list_item's need to have a different level of indentation
+        # list_item's need to have a different level of indentation
+        # If the ``RST_source[line_num]`` is  ``____#.\tTwo.\n``, then
+        # (note that _ represents a space)
+        # * remainder     = '#.\tTwo.\n'  i.e. removed upfront spaces
+        # * the_list_item = '#.'          i.e. what defines the list
+        # * prefix        = '______\t'    i.e. what to put before '.. ucomment'
+        # * list_item.group('space')='\t' i.e. the tab that appears after '#.'
         remainder = RST_source[line_num][prefix_match.end():]
         list_item = RST_LIST_ITEMS_AS_RE.match(remainder)
         the_list_item = list_item.group().rstrip(list_item.group('space'))

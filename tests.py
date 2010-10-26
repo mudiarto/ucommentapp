@@ -553,6 +553,21 @@ class Test_RST_File_Changes(TestCase):
     assert(test_bullet_13 == out_bullet_13)
     assert(c_root == 'GHJKLM')
 
+    # Bullet points, where bullet is a compound element
+
+    test_bullet_14 = ['Some text.\n', '\n', '*\tParagraph one.\n','\n',
+                      '\tParagraph two of bullet one.\n', '\n',
+                      '*\tParagraph one of bullet two.\n']
+    test_ref = CommentRef('paragraph', 5, 'KLPMQD')
+    c_root = views.update_RST_with_comment(test_ref, '9a', test_bullet_14)
+    out_bullet_14 = ['Some text.\n', '\n', '*\tParagraph one.\n','\n',
+                     '\tParagraph two of bullet one.\n', '\n',
+                     '\t.. ucomment:: KLPMQD: 9a,\n', '\n',
+                     '*\tParagraph one of bullet two.\n', '\n']
+    assert(test_bullet_14 == out_bullet_14)
+    assert(c_root == 'KLPMQD')
+
+
 
 
     # TODO(KGD): attempt to comment on both paragraph 1 and 2 in the bullet
