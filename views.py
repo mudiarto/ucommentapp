@@ -204,7 +204,7 @@ def get_IP_address(request):
         pass
     else:
         # HTTP_X_FORWARDED_FOR is a comma-separated list; take first IP:
-        ip = real_ip.split(',')[0]
+        ip = ip.split(',')[0]
 
     if ip == '' or ip.lower() == 'unkown':
         ip = request.META['REMOTE_ADDR']      # User is not on a proxy
