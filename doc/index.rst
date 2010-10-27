@@ -480,7 +480,8 @@ How the comment system works
 	You will need to edit your Django **project** (not application) ``urls.py``
 	and ``settings.py`` files to enable the admin interface.
 
-Detailed comments on how |ucomment| works will be coming soon.
+Detailed comments on how |ucomment| works will be coming soon.  The notes below
+here are just a rough draft of ideas that I will expand on.
 
 *	What happens to the RST source files when a comment is added, approved, or
 	rejected.
