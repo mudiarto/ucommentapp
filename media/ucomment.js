@@ -16,6 +16,10 @@ var USE_MATHJAX = true;
 // "conf/settings.py" file.
 var URL_VIEWS_PREFIX = 'document';
 
+// Turn off the expand/show accordion effect for the Table of Contents
+var USE_TOC_ACCORDION = false;
+
+
 // Message shown to user if a delay occurs on the server
 POST_COMMENT_FAILURE  = 'A delay occurred on the server while processing your ';
 POST_COMMENT_FAILURE += 'comment. Please try submitting it again.  If it still does ';
@@ -587,50 +591,49 @@ var initialize = function() {
 	// Replace the main TOC with expanding subsections.  Will still
 	// show the TOC correctly, even if Javascript is not enabled, since
 	// the source HTML is left unaffected.
-	//
-	// If you don't like the expand/hide TOC, then just delete
-	// this chunk of Javascript.
-	first_level_items = Y.all('.ucomment-toctree-l1');
-	expand_li = function(e){
-		sibling = e.target.get('parentNode').one('li');
-		if (sibling.getStyle('display') === 'none'){
-			sibling.setStyle('display', 'block');
-			e.target.set('innerHTML', '(hide)')
-		}else{
-			sibling.setStyle('display', 'none');
-			e.target.set('innerHTML', '(expand)')
-		}
-	}
-	if (first_level_items.size() > 0){
-		parent = first_level_items.item(0).get('parentNode')
-		for (var i=0; i<first_level_items.size(); i++){
-			main_item = first_level_items.item(i);
-			ul_children = main_item.one('ul');
-			if (ul_children != null)
-			{
-				sub_items = main_item.removeChild(ul_children);
-				has_referrer = false;
-				for (var j=0; j<sub_items.get('children').size(); j++){
-					if (sub_items.get('children').item(j).one('span')){
-						has_referrer = true;}
-				}
-				main_items = parent.get('children');
-				replace = '<li class="ucomment-expander"';
-				if (!has_referrer){replace += 'style="display: none;"'}
-				replace += '><ul>' + sub_items.get('innerHTML') + '</ul>';
-				new_child = Y.Node.create(replace);
-				main_item.append(new_child);
-
-				new_node = '<a class="ucomment-toc-expander" ';
-				if (has_referrer){
-					new_node += 'href="#">(hide)</a>';}
-				else{
-					new_node += 'href="#">(expand)</a>';}
-				expander = Y.Node.create(new_node);
-				main_item.insert(expander, 1);
-				Y.on('click', expand_li, expander);
+	if (USE_TOC_ACCORDION){
+		first_level_items = Y.all('.ucomment-toctree-l1');
+		expand_li = function(e){
+			sibling = e.target.get('parentNode').one('li');
+			if (sibling.getStyle('display') === 'none'){
+				sibling.setStyle('display', 'block');
+				e.target.set('innerHTML', '(hide)')
+			}else{
+				sibling.setStyle('display', 'none');
+				e.target.set('innerHTML', '(expand)')
 			}
 		}
+		if (first_level_items.size() > 0){
+			parent = first_level_items.item(0).get('parentNode')
+			for (var i=0; i<first_level_items.size(); i++){
+				main_item = first_level_items.item(i);
+				ul_children = main_item.one('ul');
+				if (ul_children != null)
+				{
+					sub_items = main_item.removeChild(ul_children);
+					has_referrer = false;
+					for (var j=0; j<sub_items.get('children').size(); j++){
+						if (sub_items.get('children').item(j).one('span')){
+							has_referrer = true;}
+					}
+					main_items = parent.get('children');
+					replace = '<li class="ucomment-expander"';
+					if (!has_referrer){replace += 'style="display: none;"'}
+					replace += '><ul>' + sub_items.get('innerHTML') + '</ul>';
+					new_child = Y.Node.create(replace);
+					main_item.append(new_child);
+
+					new_node = '<a class="ucomment-toc-expander" ';
+					if (has_referrer){
+						new_node += 'href="#">(hide)</a>';}
+					else{
+						new_node += 'href="#">(expand)</a>';}
+					expander = Y.Node.create(new_node);
+					main_item.insert(expander, 1);
+					Y.on('click', expand_li, expander);
+				}
+			}
+		};
 	};
 
 }; // end: initialize() function
