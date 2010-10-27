@@ -18,6 +18,10 @@ ucomment_ver = getattr(__import__(app_dirname, None, None), '__version__')
 
 # Comment settings
 # ----------------
+
+# Enable commenting?  Set to `False` and restart the Django server to instantly
+# turn off commenting.  Existing comments will also not be displayed.
+enable_comments = True
 # Number of characters for the comment root (added to RST text file sources)
 root_node_length = 6
 # Number of characters identifying a comment on a page (unique within each root)

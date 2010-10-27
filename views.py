@@ -1504,6 +1504,10 @@ def retrieve_comment_HTML(request):
     http://www.b-list.org/weblog/2006/jul/31/django-tips-simple-ajax-example-part-1/
     """
     if request.method == 'POST':
+        # If comment reading/writing is disabled: return nothing
+        if not(conf.enable_comments):
+            return HttpResponse('', status=200)
+
         root = request.POST.get('comment_root', '')
         sort_order = request.POST.get('order', 'forward')
         response = ''
@@ -1547,6 +1551,11 @@ def retrieve_comment_counts(request):
             comment_roots.pop(comment_roots.index('_page_name_'))
             cache_key = 'counts_for__' + convert_web_name_to_link_name(
                                            request.POST.get('_page_name_', ''))
+
+            if not conf.enable_comments:
+                return HttpResponse(simplejson.dumps(response_dict),
+                                            mimetype='application/javascript')
+
             if cache_key in django_cache.cache:
                 log_file.debug('COUNTS: returned cached result.')
                 response_dict = django_cache.cache.get(cache_key)

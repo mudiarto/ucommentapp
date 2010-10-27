@@ -995,13 +995,14 @@ def ucomment_builder_init_function(app):
                                    ['conf.settings'])
 
         # If we run from a freshenv (fresh environment), then these are the
-        # same dictionaries; we need to take some extra precaution
-
+        # same dictionaries; we need to take some extra precaution: mainly for
+        # using unit testing which has overrides in its conf.py file.
         same_id = id(conf) == id(user_conf)
         for key, value in temp.__dict__.iteritems():
             # First, load all settings from ``settings/conf.py`` file
-            if key[0:2] != '__' and not(same_id):
-                conf[key] = value
+            if not(same_id) or (key not in conf):
+                if key[0:2] != '__':
+                    conf[key] = value
 
             # Setting is in user's conf.py file take preference:
             if key in user_conf:

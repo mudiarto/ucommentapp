@@ -62,6 +62,9 @@ implemented.  (I personally find inline commenting a bit distracting.)
 Bullet point feature summary
 -------------------------------
 
+*	Visitors to the document website can turn comments on or off (sometimes its
+	nice to just read the document, without extra visual distraction!).
+
 *	The document can be updated and republished on the web, and the original
 	comments will correctly move to the updated location.
 
@@ -119,6 +122,9 @@ Bullet point feature summary
 *	Basic tracking of page hits (visits) and page popularity can be followed in
 	the Django admin interface. (see code in the application's ``admin.py``
 	file to modify the admin interface).
+
+*	A server setting exists to stop all commenting on the document, and to
+	not display any existing comments.
 
 *	*Experimental*: long chapters or sections in the document can be optionally
 	split into smaller subsections that each appear on their own HTML page.
