@@ -78,7 +78,14 @@ stylesheet_link = MEDIA_URL + 'ucomment.css' + '?' + ucomment_ver
 
 # Web link to the Javascript file:
 js_file = MEDIA_URL + 'ucomment.js' + '?' + ucomment_ver
-mathjax_file = MEDIA_URL + 'MathJax/MathJax.js'
+
+# Do you mathematics in your documents?  You will not regret using MathJax:
+# http://www.mathjax.org/community/mathjax-in-use/ to render math in HTML.
+#
+# Set this setting to the empty string ('') if you don't need math.
+# Also, adjust the ``USE_MATHJAX`` setting at the top of the ucomment Javascript
+# file, ``js_file``, to turn on MathJax.
+mathjax_file = '' # or point to MathJax files: MEDIA_URL + 'MathJax/MathJax.js'
 
 # These line(s) of text will be placed in front of the HTML served by Django.
 html_prefix_text = """
@@ -100,11 +107,14 @@ html_prefix_text = """
 html_suffix_text = ('<script type="text/javascript" '
                     'src="http://yui.yahooapis.com/3.2.0/build/yui/'
                     'yui-min.js"></script>\n'
-                    '<script type="text/javascript" src="%s"></script>\n'
-                    '<script type="text/javascript" src="%s"></script>\n'
-                    '<!-- Call the ucomment Javascript file AFTER calling MathJax -->'
-                    '<script>MathJax.Hub.Queue(function () { ucomments() });</script>') %\
-                    (js_file, mathjax_file)
+                    '<script type="text/javascript" src="%s"></script>\n') % \
+                    js_file
+
+if mathjax_file:
+    html_suffix_text += ('<script type="text/javascript" src="%s"></script>\n'
+                         '<!-- Call the ucomment Javascript file AFTER calling '
+                         'MathJax -->\n<script>MathJax.Hub.Queue(function () '
+                         '{ ucomments() });</script>') % mathjax_file
 
 # HTML templates
 # --------------
