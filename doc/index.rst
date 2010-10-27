@@ -11,20 +11,26 @@ document. Unlike :ref:`other commenting systems <other-commenting-systems>`,
 |ucomment| was developed specifically for commenting on evolving documentation.
 In other words, the comments are to be integrated (directly, or modified), into
 the document by the author, and then the revised document can be
-published again to the web. |ucomment| will work also with documents that are
-static.
+published again to the web.  Comments can easily be moved to other
+locations in the document, or simply removed by the author.
+
+|ucomment| will work also with documents that are static.
 
 |ucomment| requires the author write the document using `reStructuredText
 <http://en.wikipedia.org/wiki/ReStructuredText>`_ in one or more text files.
-The `Sphinx documentation generator <http://sphinx.pocoo.org/latest/>`_
-converts the reStructuredText to HTML output.  (Sphinx can also be used to
-generate PDF, ebook, and other output formats).
 
-A distributed version control system -- currently only Mercurial is
-supported -- is used to track all revisions and comments added to the document.
+The `Sphinx documentation generator <http://sphinx.pocoo.org/latest/>`_
+is used to convert the reStructuredText to HTML output.  This allows other
+powerful Sphinx enhancements to be used.  Sphinx can also be used to generate
+PDF, ebook, and other output formats from your document.
+
+A distributed version control system is used to track all revisions and comments
+added to the document.  Currently only Mercurial is supported, others can
+easily be added.
+
 Finally, Django is used to store all comments, page visits, user statistics,
-implement server-side search for the document, and comment administration is
-done from the Django admin interface.
+implement server-side search for the document, and comment administration, using
+the Django admin interface.
 
 Once the document is published to the web, visitors may comment on the document.
 Comments must be approved by a site administrator (customizable), via a
@@ -32,12 +38,13 @@ single-click URL to either accept or reject the comment. Once approved,
 comments will appear on the site with the next page refresh.
 
 The Sphinx documentation generator already provides good-looking tabular output,
-mathematical equations, and so forth.  The appearance of the document can be
-further enhanced by adjusting Sphinx templates and cascading style sheets
-elements.
+mathematical equations, and so forth.  But if you need further enhancements,
+simply adjust the templates and cascading style sheets elements that come with
+|ucomment|.
 
-An example of |ucomment| in action is this website.
-
+An example of |ucomment| in action is this website.  The source code for this
+document is `available here
+<http://hg.connectmv.com/hgweb.cgi/ucommentapp-documentation/>`_.
 .. _other-commenting-systems:
 
 Other web-based commenting systems
@@ -146,8 +153,8 @@ Dependencies
 installed on that server:
 
 * Python 2.6 or better (it may work with Python 2.5, but it has not been tested)
-* Django 1.2.1, and its dependencies (earlier versions may work also)
-* Sphinx 1.X, and its dependencies
+* Django 1.2.1, or better, and its dependencies (earlier versions may work also)
+* Sphinx 1.1, or better, and its dependencies
 * Mercurial 1.6.2, or better (earlier versions may work also)
 
 Detailed installation instructions

@@ -169,6 +169,14 @@ div#ucomment-section-body table th p {
 div#ucomment-section-body table tr:hover {
 	background-color: #FFFFCC;}
 
+/* Styling for <tt></tt> elements (from Sphinx) */
+div#ucomment-section-body tt {
+	background-color:#F2F2F2;
+	border-bottom-color:#DDDDDD;
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+	color:#333333;
+}
 
 /* Styling for the source code listings: (from pygments.css)*/
 div#ucomment-section-body pre{
@@ -181,14 +189,12 @@ div#ucomment-section-body pre{
     border-left: none;
     border-right: none;
 }
-
 div#ucomment-section-body td.linenos pre {
     padding: 5px 0px;
     border: 0;
     background-color: transparent;
     color: #aaa;
 }
-
 div#ucomment-section-body .highlight .hll { background-color: #ffffcc }
 div#ucomment-section-body .highlight .c { color: #008800; font-style: italic } /* Comment */
 div#ucomment-section-body .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */

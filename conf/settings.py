@@ -79,8 +79,9 @@ stylesheet_link = MEDIA_URL + 'ucomment.css' + '?' + ucomment_ver
 # Web link to the Javascript file:
 js_file = MEDIA_URL + 'ucomment.js' + '?' + ucomment_ver
 
-# Do you mathematics in your documents?  You will not regret using MathJax:
-# http://www.mathjax.org/community/mathjax-in-use/ to render math in HTML.
+# Do you mathematics in your documents?  Will your users want to write math
+# in their comments?  Consider using MathJax for good looking math in HTML.
+# http://www.mathjax.org/community/mathjax-in-use/
 #
 # Set this setting to the empty string ('') if you don't need math.
 # Also, adjust the ``USE_MATHJAX`` setting at the top of the ucomment Javascript
@@ -115,6 +116,9 @@ if mathjax_file:
                          '<!-- Call the ucomment Javascript file AFTER calling '
                          'MathJax -->\n<script>MathJax.Hub.Queue(function () '
                          '{ ucomments() });</script>') % mathjax_file
+
+# This is the place to append any Analytics codes, e.g. Google Analytics:
+# html_suffix_text += "Analytics code from vendor."
 
 # HTML templates
 # --------------
