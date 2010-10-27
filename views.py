@@ -1439,7 +1439,7 @@ def display_page(page_requested):
     """
     start_time = time.time()
     link_name = convert_web_name_to_link_name(page_requested.path)
-
+    ip_address = get_IP_address(page_requested)
     item = models.Page.objects.filter(link_name=link_name)
     if not item:
         # Requested the master_doc (main document)
@@ -1465,7 +1465,8 @@ def display_page(page_requested):
             item = models.Page.objects.filter(link_name=link_name + '/index')
         else:
             # TODO(KGD): return a 404 page template: how to do that?
-            log_file.debug('Unknown page requested: ' + link_name)
+            log_file.debug('Unknown page requested "%s" from %s' % (link_name,
+                                                                ip_address))
             return HttpResponse('Page not found', status=404)
 
     page = item[0]
@@ -1474,7 +1475,7 @@ def display_page(page_requested):
 
     result = render_page_for_web(page, page_requested)
     log_file.info('REQUEST: page = %s from IP=%s; rendered in %f secs.' % (
-        link_name, get_IP_address(page_requested), time.time()-start_time))
+        link_name, ip_address, time.time()-start_time))
     return result
 
 def format_comments_for_web(comments):
