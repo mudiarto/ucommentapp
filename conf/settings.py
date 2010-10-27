@@ -74,10 +74,10 @@ local_repo_URL = r'file://' + application_path + '/document_compile_area/'
 # HTML settings
 # -------------
 # Web link to the stylesheet:
-stylesheet_link = MEDIA_URL + 'ucomment-' + ucomment_ver + '.css'
+stylesheet_link = MEDIA_URL + 'ucomment.css' + '?' + ucomment_ver
 
 # Web link to the Javascript file:
-js_file = MEDIA_URL + 'ucomment-' + ucomment_ver + '.js'
+js_file = MEDIA_URL + 'ucomment.js' + '?' + ucomment_ver
 mathjax_file = MEDIA_URL + 'MathJax/MathJax.js'
 
 # These line(s) of text will be placed in front of the HTML served by Django.
