@@ -10,10 +10,11 @@ del DJANGO_SETTINGS  # Leads to recursion depth errors when unpickling by Sphinx
 # <NOTE: Please do not import any modules here directly, only functions from
 #        a module.  This file is pickled, and modules cannot be cPickled.>
 
-# Application settings (do not edit these two settings)
+# Application settings (do not edit these 3 settings)
 # --------------------
 application_path = __file__[0:__file__.find('conf' + sep + 'settings.py')]
 app_dirname = application_path.split(sep)[-2]
+ucomment_ver = getattr(__import__(app_dirname, None, None), '__version__')
 
 # Comment settings
 # ----------------
@@ -69,10 +70,10 @@ local_repo_URL = r'file://' + application_path + '/document_compile_area/'
 # HTML settings
 # -------------
 # Web link to the stylesheet:
-stylesheet_link = MEDIA_URL + 'ucomment.css'
+stylesheet_link = MEDIA_URL + 'ucomment-' + ucomment_ver + '.css'
 
 # Web link to the Javascript file:
-js_file = MEDIA_URL + 'ucomment.js'
+js_file = MEDIA_URL + 'ucomment-' + ucomment_ver + '.js'
 mathjax_file = MEDIA_URL + 'MathJax/MathJax.js'
 
 # These line(s) of text will be placed in front of the HTML served by Django.

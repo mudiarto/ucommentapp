@@ -17,8 +17,7 @@ var USE_MATHJAX = true;
 var URL_VIEWS_PREFIX = 'document';
 
 // Turn off the expand/show accordion effect for the Table of Contents
-var USE_TOC_ACCORDION = false;
-
+var USE_TOC_ACCORDION = true;
 
 // Message shown to user if a delay occurs on the server
 POST_COMMENT_FAILURE  = 'A delay occurred on the server while processing your ';
