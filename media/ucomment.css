@@ -170,7 +170,7 @@ div#ucomment-section-body table tr:hover {
 	background-color: #FFFFCC;}
 
 /* Styling for <tt></tt> elements (from Sphinx) */
-div#ucomment-section-body tt {
+div#ucomment-section-body tt, div#ucomment-content tt {
 	background-color:#F2F2F2;
 	border-bottom-color:#DDDDDD;
 	border-bottom-style:solid;

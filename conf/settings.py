@@ -125,46 +125,55 @@ if mathjax_file:
 # that pops up.  This is the text that is given by default.  You should
 # use valid HTML, and links to any pictures must point to the correct
 # server location.
-html_help_text = '''
+html_about_commenting = '''
 <h3>About this comment system</h3>
 
 <p>This pages uses a commenting system to obtain your feedback.  Feel free to
 ask questions, provide your perspective, or leave a relevant comment on any
 block of text, bullet point, code, or chunck of content.</p>
 
-<p>To get started, please click on the vertical sidebar, near the content you 
-would like to comment on.  It will highlight the section you are commenting 
+<p>To get started, please click on the vertical sidebar, near the content you
+would like to comment on.  It will highlight the section you are commenting
 on.</p>
 
-<img src="%s" alt="Showing how the comment system works">
+<img src="%s" alt="Shows how the comment system works">
 
-<p>After being approved, your comment will appear on the website.  Please 
-provide your name and email address if you would like to receive credit for  
+<p>After being approved, your comment will appear on the website.  Please
+provide your name and email address if you would like to receive credit for
 your contribution.</p>
 
-<p>Please note that we reserve the right to edit or remove a comment, and that 
+<p>Please note that we reserve the right to edit or remove a comment, and that
 you give us permission to use your contribution.</p>
 
-<h4>How to comment</h4>
+<h3>How to comment</h3>
 
 <ul>
-<li> <i>Italics</i>: <tt>*italic text*</tt>
-<li> <b>Bold text</b>: <tt>**bold text**</tt>
-<li> <tt>monospaced text</tt>: <tt>``monospaced text``</tt> (use backquotes)
-<li> Bullet points:
+<li> <i>Italics</i>:&nbsp;&nbsp;&nbsp;&nbsp;<tt>*italic text*</tt>
+<li> <b>Bold text</b>:&nbsp;&nbsp;&nbsp;&nbsp; <tt>**bold text**</tt>
+<li> <tt>monospaced text</tt>:&nbsp;&nbsp;&nbsp;&nbsp;
+<tt>``monospaced text``</tt> (use backquotes)
+<li> Hyperlinks are automatically detected: &nbsp;&nbsp;&nbsp;&nbsp;
+<tt>http://ucomment.org</tt> shows up as
+<a href="http://ucomment.org">http://ucomment.org</a>
+<li> Unnumbered bullet points use <tt>*</tt> asterisks, while numbered points
+use a <tt>#</tt> hash mark.
 <pre>
 * This is a bulleted list.
 * It has two items, the second
   item uses two lines.
+  #. Point one.
+  #. Point two.
 </pre>
-<li> Mathematics: <tt>\(e^{i\pi} + 1 = 0\)</tt> shows as \(e^{i\pi} + 1 = 0\)
-if the site administrator has allowed mathematics in the comments.
+<li> Mathematics: <tt>\(</tt><tt>e^{i\pi} + 1 = 0</tt><tt>\)</tt> shows as
+\(e^{i\pi} + 1 = 0\) if the site administrator has allowed mathematics in the
+comments.  See <a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">this
+page</a> for help with writing math equations.
 </ul>
 
 <p>Tables, source code and other elements can also be added to your comment;
-<a href="http://sphinx.pocoo.org/latest/rest.html">please read more here</a>
-</p>.
-''' % MEDIA_URL + 'comment-screenshot.png'
+<a href="http://sphinx.pocoo.org/latest/rest.html">please read more here</a>.
+</p>
+''' % (MEDIA_URL + 'comment-screenshot.png')
 
 # HTML templates
 # --------------

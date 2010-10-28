@@ -318,7 +318,8 @@ def compile_comment(comment):
     comment = compile_RST_to_HTML(comment)
     end_time = time.time()
     if (end_time-start_time) > 3:
-        log_file.warning('Comment compile time exceeded 4 seconds')
+        log_file.warning(('Comment compile time exceeded 3 seconds; server'
+                          'load too high?'))
     return comment
 
 def call_sphinx_to_compile(working_dir):
@@ -1422,7 +1423,8 @@ def render_page_for_web(page, request, search_value=''):
                     'suffix_html': conf.html_suffix_text,
                     'search_value': search_value,
                     'local_TOC': sidebar_local_toc,
-                    'sidebar_html': page.sidebar}
+                    'sidebar_html': page.sidebar,
+                    'about_commenting_system': conf.html_about_commenting}
     page_content.update(csrf(request))  # Handle the search form's CSRF
 
     # TODO(KGD): redirect to /_search/search terms/AND/True if required
