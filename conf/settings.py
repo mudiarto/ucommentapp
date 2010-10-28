@@ -120,6 +120,52 @@ if mathjax_file:
 # This is the place to append any Analytics codes, e.g. Google Analytics:
 # html_suffix_text += "Analytics code from vendor."
 
+
+# We offer some help to new users in the tab of the comment dialog box
+# that pops up.  This is the text that is given by default.  You should
+# use valid HTML, and links to any pictures must point to the correct
+# server location.
+html_help_text = '''
+<h3>About this comment system</h3>
+
+<p>This pages uses a commenting system to obtain your feedback.  Feel free to
+ask questions, provide your perspective, or leave a relevant comment on any
+block of text, bullet point, code, or chunck of content.</p>
+
+<p>To get started, please click on the vertical sidebar, near the content you 
+would like to comment on.  It will highlight the section you are commenting 
+on.</p>
+
+<img src="%s" alt="Showing how the comment system works">
+
+<p>After being approved, your comment will appear on the website.  Please 
+provide your name and email address if you would like to receive credit for  
+your contribution.</p>
+
+<p>Please note that we reserve the right to edit or remove a comment, and that 
+you give us permission to use your contribution.</p>
+
+<h4>How to comment</h4>
+
+<ul>
+<li> <i>Italics</i>: <tt>*italic text*</tt>
+<li> <b>Bold text</b>: <tt>**bold text**</tt>
+<li> <tt>monospaced text</tt>: <tt>``monospaced text``</tt> (use backquotes)
+<li> Bullet points:
+<pre>
+* This is a bulleted list.
+* It has two items, the second
+  item uses two lines.
+</pre>
+<li> Mathematics: <tt>\(e^{i\pi} + 1 = 0\)</tt> shows as \(e^{i\pi} + 1 = 0\)
+if the site administrator has allowed mathematics in the comments.
+</ul>
+
+<p>Tables, source code and other elements can also be added to your comment;
+<a href="http://sphinx.pocoo.org/latest/rest.html">please read more here</a>
+</p>.
+''' % MEDIA_URL + 'comment-screenshot.png'
+
 # HTML templates
 # --------------
 # Create the navigation links, shown at the top and bottom of each page
