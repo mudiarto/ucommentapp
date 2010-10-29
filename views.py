@@ -68,7 +68,7 @@ STOP_WORDS = ['I', 'a', 'an', 'are', 'as', 'at', 'be', 'by', 'com', 'for',
 # Code begins from here
 # ---------------------
 log_file = logging.getLogger('ucomment')
-log_file.setLevel(logging.DEBUG)
+log_file.setLevel(logging.INFO)
 fh = logging.handlers.RotatingFileHandler(conf.log_filename,
                                           maxBytes=5000000,
                                           backupCount=10)
@@ -242,7 +242,7 @@ def valid_form(p_email, comment_raw):
                            'characters.</li>' % (conf.comment_min_length,
                                                  conf.comment_max_length)))
         errors.append('</ul>')
-        log_file.debug('Returning with these errors:' + str(errors))
+        log_file.info('Returning with these errors:' + str(errors))
         return ''.join(errors)
     else:
         return ''
@@ -273,7 +273,7 @@ def initial_comment_check(request):
         web_response['Access-Control-Allow-Origin'] = '*'
         return False, web_response
     else:
-        log_file.debug(request.method + ' received; not handled; return 400.')
+        log_file.warn(request.method + ' received; not handled; return 400.')
         return False, HttpResponse(status=400)
 
 def preview_comment(request):
@@ -288,6 +288,7 @@ def preview_comment(request):
     if success:
         web_response = HttpResponse(status=200)
         try:
+
             compiled_comment_HTML = compile_comment(response)
             web_response['ucomment'] = 'Preview-OK'
         except Exception as err:
@@ -302,6 +303,8 @@ def preview_comment(request):
                                      datetime.datetime.utcnow().ctime())
             web_response['ucomment'] = 'Preview-Exception'
 
+        log_file.info('COMPILE: from IP=%s; comment: "%s"' % \
+                        (get_IP_address(request), response))
         web_response.write(compiled_comment_HTML)
         return web_response
     else:
@@ -362,7 +365,7 @@ def compile_RST_to_HTML(raw_RST):
 
     Also copy over generated MATH media to the correct directory on the server.
     """
-    log_file.debug('COMPILE: comment: "%s"' % raw_RST)
+
     ensuredir(conf.comment_compile_area)
     modified_RST = convert_raw_RST(raw_RST)
     with open(conf.comment_compile_area + os.sep + 'index.rst', 'w') as fhand:
@@ -464,7 +467,7 @@ def create_poster(request):
         poster.save()
 
 
-    log_file.debug('POSTER: Created/updated poster: ' + str(poster))
+    log_file.info('POSTER: Created/updated poster: ' + str(poster))
     return poster
 
 def submit_and_store_comment(request):
@@ -605,14 +608,14 @@ def submit_and_store_comment(request):
         is_rejected = c_is_rejected,
         is_approved = c_is_approved)
 
-    log_file.debug('COMMENT: Submitted comment now saved in the database.')
+    log_file.info('COMMENT: Submitted comment now saved in the database.')
 
     # Send emails to the poster and comment admin regarding the new comment
     # TODO(KGD): queue it
     emails_after_submission(poster, the_comment, request)
 
     total_time = str(round(time.time() - start_time, 1))
-    log_file.debug(('COMMENT: Emails to poster and admin sent successfully; '
+    log_file.info(('COMMENT: Emails to poster and admin sent successfully; '
                     "returning response back to user's browser.  Total time to "
                     ' process comment = %s secs.') % total_time)
     return response
@@ -756,7 +759,7 @@ def update_local_repo(rev='tip'):
                    'badly specified in the settings file.')
             raise UcommentError(error_remote, msg)
 
-        log_file.debug('Created a clone of the remote repo in the local path')
+        log_file.info('Created a clone of the remote repo in the local path')
 
     # Update the local repository to rev='tip' from the source repo first
     try:
@@ -842,7 +845,7 @@ def commit_comment_to_sources(reference, node, func, additional=None):
                        (c_root, node, str(reference.line_number),
                         short_filename, hex_str)
         hex_str = commit_to_repo_and_push(commit_message)
-        log_file.debug(commit_message)
+        log_file.info(commit_message)
         return hex_str, c_root
     except (UcommentError, dvcs.DVCSError) as err:
         UcommentError(err)
@@ -1150,7 +1153,7 @@ def send_email(from_address, to_addresses, subject, message):
             # Only log the error, incase we are returned back here
             log_file.error('EMAIL ERROR: ' + str(err))
 
-        log_file.debug('EMAIL: sent to: ' + ', '.join(to_addresses))
+        log_file.info('EMAIL: sent to: ' + ', '.join(to_addresses))
 
 def email_poster_pending(poster, comment):
     """ Sends an email to the poster to let them know their comment is in the
@@ -1533,7 +1536,8 @@ def retrieve_comment_HTML(request):
                 associated_comments = reversed(associated_comments)
 
             response = format_comments_for_web(associated_comments)
-            log_file.debug('COMMENT: Requested HTML for reference %s' % root)
+            log_file.info('COMMENT: Request HTML for %s from IP=%s' %\
+                          (root, get_IP_address(request)))
             return HttpResponse(response, status=200)
         else:
             log_file.warn(('A user requested comment reference = %s which did '
@@ -1546,7 +1550,7 @@ def retrieve_comment_HTML(request):
     elif request.method == 'GET':
         return HttpResponse('N/A', status=404)
     else:
-        log_file.debug((request.method + ' method for comment HTML received; '
+        log_file.warn((request.method + ' method for comment HTML received; '
                         'not handled; return 400.'))
         return HttpResponse(status=400)
 
@@ -1571,7 +1575,7 @@ def retrieve_comment_counts(request):
                                             mimetype='application/javascript')
 
             if cache_key in django_cache.cache:
-                log_file.debug('COUNTS: returned cached result.')
+                log_file.info('COUNTS: returned cached result.')
                 response_dict = django_cache.cache.get(cache_key)
             else:
 
@@ -1596,7 +1600,7 @@ def retrieve_comment_counts(request):
             if (time.time()-start_time) > conf.cache_count_duration:
                 django_cache.cache.set(cache_key, response_dict,
                                        timeout=conf.cache_count_timout)
-                log_file.debug('COUNTS: %s will be cached for %f secs.' % \
+                log_file.info('COUNTS: %s will be cached for %f secs.' % \
                                     (cache_key, conf.cache_count_timout))
 
             return HttpResponse(simplejson.dumps(response_dict),
@@ -1609,7 +1613,7 @@ def retrieve_comment_counts(request):
     elif request.method == 'GET':
         return HttpResponse('N/A', status=404)
     else:
-        log_file.debug((request.method + ' method for comment counts '
+        log_file.info((request.method + ' method for comment counts '
                         'received; not handled; return 400.'))
         return HttpResponse(status=400)
 
@@ -1635,7 +1639,7 @@ def publish_update_document(request):
     #             Compile PDF here, or even earlier.
     #             Update search index tables in Sphinx search
     msg = 'PUBLISH: Update and publish operation successfully completed'
-    log_file.debug(msg)
+    log_file.info(msg)
     msg += ('<br><p>View your document <a href="%s">from this link</a>'
         '.</p>') % (django_reverse('ucomment-root'))
     return HttpResponse(msg, status=200)
@@ -1650,7 +1654,7 @@ def call_sphinx_to_publish():
     #            s/he clicks "Publish": you will have to dig into Sphinx's
     #            internals to see that.
     revision_changeset = update_local_repo()
-    log_file.debug('PUBLISH: the document with revision changeset = %s' % \
+    log_file.info('PUBLISH: the document with revision changeset = %s' % \
                    revision_changeset)
 
     # Copy over the ucomment extension to the local repo: that way the author
@@ -1744,7 +1748,7 @@ def call_sphinx_to_publish():
         app.build()
 
         # Log any warnings to the logfile.
-        log_file.debug('PUBLISH: Sphinx compiling HTML (pickle) successfully.')
+        log_file.info('PUBLISH: Sphinx compiling HTML (pickle) successfully.')
         if warning.tell():
             warning.seek(0)
             for line in warning.readlines():
@@ -1994,7 +1998,7 @@ def commit_updated_document_to_database(app):
         file_linkname_map[app.srcdir + os.sep + fname + \
                                      app.env.config.source_suffix] = link_name
 
-    log_file.debug('PUBLISH: pages saved to the database.')
+    log_file.info('PUBLISH: pages saved to the database.')
 
     # Next, deal with the comment references
     # ---------------------------------------------
@@ -2175,7 +2179,7 @@ def dump_relevent_fixtures(request):
                 f.write(data)
             finally:
                 f.close()
-            log_file.debug('FIXTURES: Dumped %s objects to %s' %\
+            log_file.info('FIXTURES: Dumped %s objects to %s' %\
                            (model, full_filename))
         except IOError:
             return HttpResponse(('An IOError occurred while writing %s '
@@ -2430,7 +2434,7 @@ def search_document(request, search_terms='', search_type='AND',
                          link_name = request.path.lstrip(\
                                        django_reverse('ucomment-root')[0:-1]))
 
-    log_file.debug('SEARCH: "%s" :: took %f secs' % (search,
+    log_file.info('SEARCH: "%s" :: took %f secs' % (search,
                                                      time.time() - start_time))
     return render_page_for_web(search_output, request, search)
 
