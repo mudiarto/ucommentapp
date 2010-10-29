@@ -175,9 +175,8 @@ var posting_complete = function(transactionid, response) {
 	submit_button = Y.one('#ucomment-submit-button');
 	preview_or_edit_button = Y.one('#ucomment-preview-button');
 	close_button  = Y.one('#ucomment-close-button');
-	comment_area = Y.one('#ucomment-id_comment');
 	preview_block = Y.one('#ucomment-preview-box');
-	preview_block.setStyle('height', comment_area.get('offsetHeight'));
+	preview_block.setStyle('height', Y.one('#ucomment-id_comment').get('offsetHeight'));
 
 	// Did a timeout occur?
 	if (response.status===0 && response.statusText==='timeout'){
@@ -212,6 +211,11 @@ var posting_complete = function(transactionid, response) {
 
 		if(response.responseText !== undefined){
 			preview_block.set('innerHTML', response.responseText);
+			// Typeset any math that was in the comment.
+			// See: http://www.mathjax.org/docs/synchronize.html
+			if(USE_MATHJAX){
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, "ucomment-preview-box"]);
+			}
 		}
 	}
 
@@ -230,8 +234,7 @@ var posting_complete = function(transactionid, response) {
 		close_button.set('disabled', false);
 		submit_button.set('disabled', true);
 		preview_block.set('innerHTML', response.responseText);
-		//Y.one('#id_comment_preview', 'Comment succesfully submitted');
-		// TODO(KGD): what do you want to do here?
+		// Shows the user a message that the comment was successfully submitted.
 	}
 };
 
@@ -297,7 +300,6 @@ var change_tab_post_comments = function(){
 	Y.one('#ucomment-close-button').set('disabled', true);
 	Y.one('#ucomment-close-button').setStyle('visibility', 'hidden');
 	Y.one('#ucomment-preview-box').set('innerHTML', '');
-	//Y.one('#ucomment-id_comment_preview').set('innerHTML', 'Comment preview:');  // TODO(KGD): what do you want to do here?
 	tabview_dialog.selectChild(0);
 };
 
@@ -540,6 +542,11 @@ var initialize = function() {
 			Y.log("The 'IO-complete' handler for getting comment HTML called.", "debug", "ucomment");
 			if (response.status===0 && response.statusText=='timeout'){ return;}
 			Y.one('#ucomment-view-comments-list').set('innerHTML', response.responseText);
+			// Typeset any math that was in the comment.
+			// See: http://www.mathjax.org/docs/synchronize.html
+			if(USE_MATHJAX){
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, "ucomment-view-comments-list"]);
+			}
 		};
 
 		// TODO: Don't request comments for nodes that don't have them.

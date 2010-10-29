@@ -125,7 +125,7 @@ if mathjax_file:
 # that pops up.  This is the text that is given by default.  You should
 # use valid HTML, and links to any pictures must point to the correct
 # server location.
-html_about_commenting = '''
+html_about_commenting = r'''
 <h3>About this comment system</h3>
 
 <p>This pages uses a commenting system to obtain your feedback.  Feel free to
@@ -164,10 +164,14 @@ use a <tt>#</tt> hash mark.
   #. Point one.
   #. Point two.
 </pre>
-<li> Mathematics: <tt>\(</tt><tt>e^{i\pi} + 1 = 0</tt><tt>\)</tt> shows as
-\(e^{i\pi} + 1 = 0\) if the site administrator has allowed mathematics in the
-comments.  See <a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">this
-page</a> for help with writing math equations.
+<li> <p>Mathematics: <tt>\(</tt><tt>e^{i\pi} + 1 = 0</tt><tt>\)</tt> will show
+as Euler's famous equation, \(e^{i\pi} + 1 = 0\), if the site administrator has
+allowed mathematics in the comments.   Similarly, you can use
+<tt>\[</tt><tt> ... </tt><tt>\]</tt> to write a stand-alone mathematical
+equation.
+
+    <p>See <a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">this
+    page</a> for help with writing math equations.
 </ul>
 
 <p>Tables, source code and other elements can also be added to your comment;

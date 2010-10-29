@@ -252,7 +252,7 @@ def initial_comment_check(request):
     Provides a preliminary check of the comment submission.
     * Must be a POST request not at a GET request.
     * Must have a valid email address.
-    * Comment length must be appropriate (see settings.py file).
+    * Comment length must be appropriate (see conf/settings.py file).
     """
 
     if request.method == 'POST':
@@ -341,6 +341,17 @@ def call_sphinx_to_compile(working_dir):
         raise(err)
     log_file.debug('COMMENT: called Sphinx; pickled the HTML.')
 
+def convert_raw_RST(raw_RST):
+    """
+    Performs any sanitizing of the user's input.
+
+    Currently performs:
+    * converts '\\' to '\\\\': i.e. single slash converted to double-slash,
+                               because Sphinx converts is back to a single slash
+    """
+    out = raw_RST.replace('\\', '\\\\')
+    # You can perform any other filtering here, if required.
+    return out
 
 def compile_RST_to_HTML(raw_RST):
     """ Compiles the RST string, ``raw_RST`, to HTML.  Performs no
@@ -353,8 +364,9 @@ def compile_RST_to_HTML(raw_RST):
     """
     log_file.debug('COMPILE: comment: "%s"' % raw_RST)
     ensuredir(conf.comment_compile_area)
+    modified_RST = convert_raw_RST(raw_RST)
     with open(conf.comment_compile_area + os.sep + 'index.rst', 'w') as fhand:
-        fhand.write(raw_RST)
+        fhand.write(modified_RST)
 
     try:
         conf_file = conf.comment_compile_area + os.sep + 'conf.py'
