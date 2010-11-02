@@ -1368,8 +1368,8 @@ def render_page_for_web(page, request, search_value=''):
     # Create a page hit entry in the database
     page_hit = models.Hit(UA_string = request.META['HTTP_USER_AGENT'],
                    IP_address = get_IP_address(request),
-                   page_hit = page.link_name, # could use page.html_title?
-                   referrer = referrer_str)
+                   page_hit = page.html_title,   # was ``page.link_name``
+                   referrer = referrer_str or full_referrer)
     page_hit.save()
 
     # Was highlighting requested?
