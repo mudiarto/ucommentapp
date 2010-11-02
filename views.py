@@ -1860,11 +1860,11 @@ def commit_updated_document_to_database(app):
     file_linkname_map = {}
     for fname in reversed(ordered_names):
         is_toc = is_chapter_index = False
-        if fname == app.env.config.master_doc:
-            is_toc = True
         if fname in app.env.config.ucomment['toc_docs']:
             is_chapter_index = True
+        if fname == app.env.config.master_doc:
             is_toc = True
+            is_chapter_index = False
 
         name = app.builder.outdir + os.sep + fname + app.builder.out_suffix
         try:
@@ -1956,6 +1956,11 @@ def commit_updated_document_to_database(app):
 
             # TODO(KGD): take a look at the ``app.env.resolve_toctree`` function
             #            in Sphinx.
+
+        # Use the Project's name for the master_doc (i.e. the main TOC page)
+        # for the document.
+        if is_toc and not(is_chapter_index):
+            page_info['title'] = app.env.config.project
 
         # If a page with the same link (an unique field) is found, then update
         # the page.  Do not delete the page, because that will remove any
