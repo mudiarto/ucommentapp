@@ -944,6 +944,33 @@ def split_rst_files(app, conf, remaining_files):
 def copy_static_content(app, exception):
     """
     Move all static content to the webserver.
+
+    TODO(KGD): issue # 1
+
+    Django has a slightly different approach to Sphinx when it comes to static
+    media and files. http://docs.djangoproject.com/en/dev/howto/static-files/
+
+    Django
+    ------
+    * Put files in a 'static' directory under the application, or somewhere
+      referenced by ``STATICFILES_DIRS``.
+    * Run the script: ``./manage.py collectstatic`` to move these files to
+      ``STATICFILES_ROOT``.
+    * Reference these files using Django's templating system.
+
+    Sphinx
+    ------
+    * Put the files under your document root somewhere, e.g. images/abc.png
+    * Refer to the images relative to your top source directory.
+    * Sphinx copies the files over to _static, or _images of the output
+      directory and a hard-coded link is placed in the HTML,
+      e.g. ../_images/abc.png
+
+    How to combine these 2 approaches?
+    ----------------------------------
+    * Follow the Sphinx approach, but use {{TEMPLATE}} tags in the image's URL
+    * Using the Sphinx template engine to replace that tag with the actual
+      media URL used on the production server.
     """
     conf = app.env.config.ucomment
     if exception is not None:
