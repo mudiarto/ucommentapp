@@ -319,6 +319,22 @@ class ucomment_html_translator(SmartyPantsHTMLTranslator):
         self.extend_node_attrs(node, bias=0)
         self.visit_image_original(self, node)
 
+        # At this point Sphinx/Docutils has added code to the HTML that hard-
+        # codes the image's location relative to the document root.
+        def replace_image_URL(html):
+            """  Strip out Sphinx URL and replace it with a template. """
+            # This directory name is hard-coded in Sphinx's source
+            # See ``sphinx/builders/html.py`` for example
+            sphinx_img_location = r'src="(.*)/_images/'
+            template_replacement = r'src="/{{IMAGE_LOCATION}}/'
+            # Not sure if one should replace the alt="../_images/___" URL also
+            return re.subn(sphinx_img_location, template_replacement, html)
+
+        self.body[-1], _ = replace_image_URL(self.body[-1])
+        self.body[-2], _ = replace_image_URL(self.body[-2])
+
+
+
     def visit_sidebar(self, node):
         """
         When visiting sidebars: we cannot comment on anything within a sidebar,
@@ -962,15 +978,27 @@ def copy_static_content(app, exception):
     ------
     * Put the files under your document root somewhere, e.g. images/abc.png
     * Refer to the images relative to your top source directory.
-    * Sphinx copies the files over to _static, or _images of the output
-      directory and a hard-coded link is placed in the HTML,
+    * Sphinx copies all media files over to _images in the output
+      directory and a hard-coded, relative link is placed in the HTML.
       e.g. ../_images/abc.png
+    * However, the key point is that all media files, no matter where they are
+      in the document hierarchy, are placed in a SINGLE directory, ``_images``.
 
     How to combine these 2 approaches?
     ----------------------------------
-    * Follow the Sphinx approach, but use {{TEMPLATE}} tags in the image's URL
-    * Using the Sphinx template engine to replace that tag with the actual
-      media URL used on the production server.
+    * Follow the Sphinx approach, but strip out all relative links to images,
+      and replace them with a hard-coded, direct link in the HTML.
+
+      For example, Sphinx will write
+      <img src="../../abc.png">      and
+      <img src="../def.png">
+
+      We will change it to:
+      <img src="{{IMAGE_LOCATION}}/abc.png">     and
+      <img src="{{IMAGE_LOCATION}}/def.png">
+
+    * Then {{IMAGE_LOCATION}} will be replaced with a fully qualified URL,
+      set in the conf/settings.py file: ``media_url`` and ``media_root``
     """
     conf = app.env.config.ucomment
     if exception is not None:
@@ -978,9 +1006,9 @@ def copy_static_content(app, exception):
 
     src = os.path.join(app.builder.outdir, '_images')
     ensuredir(src)
-    ensuredir(conf['MEDIA_ROOT']) # destination
+    ensuredir(conf['media_root']) # destination
 
-    copy_command = ['cp', '-ru', src+os.sep+'.', conf['MEDIA_ROOT']]
+    copy_command = ['cp', '-ru', src+os.sep+'.', conf['media_root']]
     try:
         subprocess.check_call(copy_command, stdout=subprocess.PIPE, cwd='.')
     except subprocess.CalledProcessError as e:
@@ -1081,8 +1109,8 @@ def ucomment_builder_init_function(app):
         conf['min_length_div'] = 3
     if 'root_node_length' not in conf:
         conf['root_node_length'] = 6
-    if 'MEDIA_ROOT' not in conf:
-        conf['MEDIA_ROOT'] = os.path.join(app.builder.outdir, '_images')
+    if 'media_root' not in conf:
+        conf['media_root'] = os.path.join(app.builder.outdir, '_images')
 
     conf['skip_nodes_in'] = set(conf['skip_nodes_in'])
 

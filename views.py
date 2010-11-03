@@ -1318,6 +1318,11 @@ def render_page_for_web(page, request, search_value=''):
                          page.body,
                          '<!-- /#django-database output ends -->\n'])
 
+    # Replace any {{IMAGE_LOCATION}} markers in the page.body with a direct
+    # link to the media.
+    page_body = page_body.replace(r'src="/{{IMAGE_LOCATION}}/',
+                                  r'src="' + conf.media_url)
+
     # If user is visiting TOC, but is being referred, show where they came from:
     full_referrer = request.META.get('HTTP_REFERER', '')
     referrer_str = ''

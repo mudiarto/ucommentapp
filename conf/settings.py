@@ -73,11 +73,31 @@ local_repo_URL = r'file://' + application_path + '/document_compile_area/'
 
 # HTML settings
 # -------------
+
+# Location on server for any media in your document: images, CSS files,
+# Javascript files, etc.  Usually the defaults:
+# ``media_root = MEDIA_ROOT``
+# ``media_url = MEDIA_URL``
+# (capitilized versions are from your Django project) are OK.  But you might
+# want to separate the media for this Django application from other apps.
+# e.g.  ``media_root = MEDIA_ROOT + sep + 'ucomment' + sep
+
+# Absolute path to the directory that holds media; must end with a slash
+# Example: '/var/www/media.example.com/'
+media_root = MEDIA_ROOT
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Example: "http://example.com/media/"   or  even just '/media/'
+media_url = MEDIA_URL
+
 # Web link to the stylesheet:
-stylesheet_link = MEDIA_URL + 'ucomment.css' + '?' + ucomment_ver
+stylesheet_link = media_url + 'ucomment.css' + '?' + ucomment_ver
 
 # Web link to the Javascript file:
-js_file = MEDIA_URL + 'ucomment.js' + '?' + ucomment_ver
+js_file = media_url + 'ucomment.js' + '?' + ucomment_ver
+
+
 
 # Do you mathematics in your documents?  Will your users want to write math
 # in their comments?  Consider using MathJax for good looking math in HTML.
@@ -102,7 +122,7 @@ html_prefix_text = """
             });
             });
 </script>
-""" % (MEDIA_URL, MEDIA_URL, MEDIA_URL, MEDIA_URL)
+""" % (media_url, media_url, media_url, media_url)
 
 # These line(s) of text will be placed at the end of the HTML served by Django.
 html_suffix_text = ('<script type="text/javascript" '
@@ -177,7 +197,7 @@ equation.
 <p>Tables, source code and other elements can also be added to your comment;
 <a href="http://sphinx.pocoo.org/latest/rest.html">please read more here</a>.
 </p>
-''' % (MEDIA_URL + 'comment-screenshot.png')
+''' % (media_url + 'comment-screenshot.png')
 
 # HTML templates
 # --------------
@@ -214,7 +234,7 @@ html_navigation_template = '''\
    accesskey="n">
    <!--<img alt="Step ahead to: {{{{ next.title }}}}" src="{media_url}next-button.png"/>-->
    next</a>
-{{% endif %}}'''.format(media_url=MEDIA_URL)
+{{% endif %}}'''.format(media_url=media_url)
 
 # Template for the local table of contents (TOC), displayed in the sidebar
 side_bar_local_toc_template = '''
