@@ -613,8 +613,7 @@ def get_documents_in_toctree(toctree_lines, found_docs, docname):
 
     document = new_document('<toctree directive>', settings)
     parser.parse(source, document)
-    return document.children[0].children[0].attributes['includefiles']
-
+    return document.children[0].children[0].attributes.get('includefiles', [])
 
 def write_src_file(filename, content, app, srcfile=''):
     """
@@ -835,10 +834,6 @@ def split_rst_files(app, conf, remaining_files):
     never touch the original files, yet we get the same document structure,
     but with large files split up.    """
 
-
-
-    space = re.compile('^(\s*)')
-
     # Now ``toc_docs`` files all contain and include other files, while
     # ``remaining_files`` is the complement of that set.
 
@@ -851,6 +846,7 @@ def split_rst_files(app, conf, remaining_files):
     #
     # At the end, write the file out to ``name.ucomment``.
 
+    space = re.compile('^(\s*)')
     for name in list(conf['toc_docs']):
         fullname = os.path.join(app.env.srcdir,
                                 name + app.env.config.source_suffix)
@@ -858,9 +854,8 @@ def split_rst_files(app, conf, remaining_files):
         with open(fullname, 'r') as source_file:
             lines = source_file.readlines()
 
-        # Which files are included by the toctree?   Replace every entry in the
-        # toctree with
-
+        # Which files are included by the toctree?   Replace the toctree with
+        # a tuple, containing the list of included files.
         for idx, line in enumerate(lines):
             if TOCTREE_RE.match(line):
                 toctree_lines = [line]
@@ -1154,6 +1149,14 @@ def ucomment_builder_init_function(app):
             if div_re.search(line.rstrip()):
                 to_process[idx-1] = ''
             if TOCTREE_RE.match(line):
+                # Minor defect: we can't handle cases when the text
+                # ``.. toctree:: `` is used in a document.  So we will ignore
+                # this directive as long as it is away from the left edge of the
+                # page: it isn't really a toctree.  Occurs when one is document-
+                # ing the toctree directive, e.g. showing it in source code.
+                if len(TOCTREE_RE.match(line).group(1).expandtabs()) > 0:
+                    continue
+
                 has_toctree = True
 
         if has_toctree:
