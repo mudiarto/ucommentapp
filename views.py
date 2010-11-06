@@ -987,17 +987,46 @@ def update_RST_with_comment(comment_ref, comment_node, RST_source):
     # 'code-block', or 'literalinclude' node (i.e. no double colons).
     if comment_ref.node_type == 'literal_block':
         double_colon = re.compile(r'(?P<space>\s*)(.*)::(\s*)')
-        directive_re = r'(\s*)\.\. '
+        directive_re = r'^(\s*)\.\. '
         for directive in NODE_DIRECTIVE_MAP['literal_block']:
             directive_re += '(' + directive + ')|'
-        directive_re = directive_re[0:-1] + r'::(\s*)'
+        directive_re = directive_re[0:-1] + r'::(\s*)(.*)'
         directive = re.compile(directive_re)
 
+        double_colon_line = line_num + 1
         for line in RST_source[line_num::-1]:
-            if directive.match(line):
+            double_colon_line -= 1
+            if directive.search(line):
                 break # it is one of the other directives
             if double_colon.match(line):
                 prefix = double_colon.match(line).group('space')
+
+                # Do some surgery on the RST source if the author is using
+                # double colons.  By example
+                #
+                #   |Below is some code, the line ends with a double colon::
+                #   |
+                #   |    >>> a = 'some source code'
+                #   |
+                # Replace it as follows.
+                #
+                #   |Below is some code, the line ends with a double colon:
+                #   |
+                #   |::
+                #   |
+                #   |    >>> a = 'some source code'
+                #   |
+
+                if line.strip() != '::':
+                    dci = line.rindex('::')
+                    RST_source[double_colon_line] = line[0:dci] + line[dci+1:]
+                    RST_source.insert(double_colon_line+1, '\n')
+                    RST_source.insert(double_colon_line+2, prefix + '::\n')
+                    # This will get saved in ``submit_and_store_comment(...)``
+                    if not isinstance(comment_ref, tuple):
+                        # Minor technicality: we used named tuples in unit tests
+                        comment_ref.line_number = comment_ref.line_number + 2
+                    line_num += 2
                 break
 
     # The point where the ucomment directive will be inserted

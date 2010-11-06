@@ -6,7 +6,7 @@ The first chapter
 
 Developed four years ago by a fast-moving online-news operation, Django was
 designed to handle two challenges: the intensive deadlines of a newsroom and
-the stringent requirements of the experienced Web developers who wrote it. 
+the stringent requirements of the experienced Web developers who wrote it.
 It lets you build high-performing, elegant Web applications quickly.
 
 The first section
@@ -130,7 +130,7 @@ Another unordered list; with spacing between entries; flush with margin:
 
 *	Hopefully, the final point.
 
- 
+
 Enumerated lists:
 
 3. This is the first item
@@ -141,14 +141,14 @@ Enumerated lists:
    numbered, but need not start at 1
    (although not all formatters will
    honour the first index).
-#. This item is auto-enumerated 
+#. This item is auto-enumerated
 
 Other enumerated lists examples.
 
 1. Item 1 initial text.
 
    a) Item here.
-   b) And other item here.	
+   b) And other item here.
 
 Paragraph of text here.
 
@@ -180,7 +180,7 @@ Another source code check
 
 .. literalinclude:: longer_source_code.py
 	:language: python
-	:linenos: 
+	:linenos:
 	:start-after: 3
 	:lines: 5-16
 

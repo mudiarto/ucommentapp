@@ -107,12 +107,12 @@ class CompileTests(TestCase):
                     ['paragraph', 47, 49, ''],
                     ['paragraph', 51, 53, ''],
                     ['title', 54, 56, ''],
-                    ['paragraph', 56, 63, ''],
-                    ['literal_block', 58, 63, ''],  # First line of code
+                    ['paragraph', 56, 58, ''],
+                    ['literal_block', 58, 65, ''],  # First line of code
                     ['paragraph', 63, 65, ''],
                     ['literal_block', 67, 74, ''],  # First line of code
                     ['paragraph', 74],
-                    ['literal_block', 76, 79, ''],  # First line of code
+                    ['literal_block', 76, 81, ''],  # First line of code
                     ['paragraph', 79],
                     ['literal_block', 81, 105, ''],  # See "2503:b8d79f586011"
                     ['paragraph', 105],
@@ -730,7 +730,7 @@ class Test_RST_File_Changes(TestCase):
                    '    print(path.exists(getcwd())\n']
     test_ref = CommentRef('literal_block', 3, 'PNPQRS')
     c_root = views.update_RST_with_comment(test_ref, '99', test_code_5)
-    out_code_5 = ['A source code example::\n', '\n',
+    out_code_5 = ['A source code example:\n', '\n', '::\n', '\n',
                   '    from os import path, getcwd\n', '\n',
                   '    print(path.exists(getcwd())\n', '\n',
                   '.. ucomment:: PNPQRS: 99,\n', '\n']
