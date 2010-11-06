@@ -993,7 +993,7 @@ def update_RST_with_comment(comment_ref, comment_node, RST_source):
         directive_re = directive_re[0:-1] + r'::(\s*)'
         directive = re.compile(directive_re)
 
-        for line in RST_source[line_num-1::-1]:
+        for line in RST_source[line_num::-1]:
             if directive.match(line):
                 break # it is one of the other directives
             if double_colon.match(line):
