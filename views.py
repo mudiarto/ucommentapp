@@ -1741,11 +1741,11 @@ def call_sphinx_to_publish():
         pickle_builder = app.builder
 
         if 'ucomment' not in app.env.config:
-            emsg = ('Please ensure the `ucomment` dictionary appears in your '
-                    '``conf.py`` file.')
-            log_file.error(emsg)
-            # TODO(KGD): return HttpResponse object still
-            return
+            emsg = ('The document was not published: please ensure the '
+                    "``ucomment`` dictionary appears in your document's"
+                    '`conf.py`` file.')
+            UcommentError(emsg)
+            return emsg
 
         # Call the ``pickle`` builder
         app.env.config.ucomment['revision_changeset'] = revision_changeset
