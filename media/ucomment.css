@@ -94,6 +94,11 @@
 #ucomment-content-main{
 	background: #20435C;
 }
+/* However, we style the left-sidebar differently on the main page: that
+   content is not commentable.*/
+body.ucomment-root #ucomment-content-main{
+	background: #FFFFFF;
+}
 
 /* ucomment-border: the 20px margin creates the click elements for the ucomments */
 #ucomment-border {

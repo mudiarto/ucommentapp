@@ -1460,7 +1460,9 @@ def render_page_for_web(page, request, search_value=''):
     # properly even if there is no Javascript.
     if page == toc_page:
         page_body = re.sub('toctree-l1', 'ucomment-toctree-l1', page_body)
-
+        css_body_class = 'ucomment-root'
+    else:
+        css_body_class = 'ucomment-page'
 
     # Finally, send this all off to the template for rendering.
     page_content = {'html_title': page.html_title,
@@ -1473,6 +1475,7 @@ def render_page_for_web(page, request, search_value=''):
                     'search_value': search_value,
                     'local_TOC': sidebar_local_toc,
                     'sidebar_html': page.sidebar,
+                    'css_body_class': css_body_class,
                     'about_commenting_system': conf.html_about_commenting}
     page_content.update(csrf(request))  # Handle the search form's CSRF
 
@@ -2486,11 +2489,13 @@ def admin_signin(request):
     """
     if request.user.is_authenticated():
         msg = ('<ul>'
+               '<li><a href="%s">Table of Contents for your document</a>'
                '<li><a href="%s">The Django admin page for your site</a>'
                '<li><a href="%s">Publish or update the document</a>'
                '<li>Backup your application by <a href="%s">dumping objects '
                'to fixtures</a>') % \
-               (django_reverse('admin:index'),
+               (django_reverse('ucomment-root'),
+                django_reverse('admin:index'),
                 django_reverse('ucomment-publish-update-document'),
                 django_reverse('ucomment-dump-fixtures'))
         return HttpResponse(msg, status=200)
