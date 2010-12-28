@@ -1633,7 +1633,7 @@ def retrieve_comment_counts(request):
                     response_dict[key] = num
 
                 log_file.debug('COUNTS: for %d nodes retrieved in %f secs' %\
-                         (len(comment_roots)-1, time.time()-start_time))
+                         (len(comment_roots), time.time()-start_time))
 
             # Should we cache the result for future?
             if (time.time()-start_time) > conf.cache_count_duration:
