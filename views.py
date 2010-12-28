@@ -1519,8 +1519,9 @@ def display_page(page_requested):
             item = models.Page.objects.filter(link_name=link_name + '/index')
         else:
             # TODO(KGD): return a 404 page template: how to do that?
-            log_file.debug('Unknown page requested "%s" from %s' % (link_name,
-                                                                ip_address))
+            log_file.debug('Unknown page requested "%s" from %s.  Full request '
+                           'was %s' % (link_name, ip_address,
+                                       page_requested.path))
             return HttpResponse('Page not found', status=404)
 
     page = item[0]
@@ -1600,6 +1601,7 @@ def retrieve_comment_counts(request):
     """
     start_time = time.time()
     response_dict = {}
+    log_file.debug('COUNTS: request received with method = %s' % request.method)
     if request.method == 'POST':
         try:
             comment_roots = sorted(request.POST.keys())

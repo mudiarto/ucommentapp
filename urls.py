@@ -3,7 +3,7 @@ Maps web URLS to functions in the ``views.py`` file.
 """
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
-from ucommentapp import views
+import views
 
 urlpatterns = patterns('',
 
