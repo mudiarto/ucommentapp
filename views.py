@@ -1600,15 +1600,16 @@ def retrieve_comment_counts(request):
     associated with each node.
     """
     start_time = time.time()
-    response_dict = {}
-    log_file.debug('COUNTS: request received with method = %s' % request.method)
-    if request.method == 'POST':
-        try:
-            comment_roots = sorted(request.POST.keys())
-            comment_roots.pop(comment_roots.index('_page_name_'))
-            cache_key = 'counts_for__' + convert_web_name_to_link_name(
-                                           request.POST.get('_page_name_', ''))
 
+    def process_counts(comment_roots, cache_key):
+        """
+        Accepts a list of comment_roots and populates the ``response_dict``
+        with the number of comments associated with each ``comment_root``.
+
+        Also supply a ``cache_key`` so that counts can be cached for a while.
+        """
+        response_dict = {}
+        try:
             if not conf.enable_comments:
                 return HttpResponse(simplejson.dumps(response_dict),
                                             mimetype='application/javascript')
@@ -1617,7 +1618,6 @@ def retrieve_comment_counts(request):
                 log_file.info('COUNTS: returned cached result.')
                 response_dict = django_cache.cache.get(cache_key)
             else:
-
                 for key in comment_roots:
                     num = 0
                     ref = models.CommentReference.objects.filter(\
@@ -1641,16 +1641,29 @@ def retrieve_comment_counts(request):
                                        timeout=conf.cache_count_timout)
                 log_file.info('COUNTS: %s will be cached for %f secs.' % \
                                     (cache_key, conf.cache_count_timout))
-
-            return HttpResponse(simplejson.dumps(response_dict),
-                                mimetype='application/javascript')
         except Exception as err:
             # only log the error, don't break the app
             UcommentError(err, 'While retrieving comment counts')
-            return HttpResponse(simplejson.dumps(response_dict),
-                                 mimetype='application/javascript')
+
+        return response_dict
+
+    log_file.debug('COUNTS: request received with method = %s' % request.method)
+    if request.method == 'POST':
+        comment_roots = sorted(request.POST.keys())
+        comment_roots.pop(comment_roots.index('_page_name_'))
+        cache_key = 'counts_for__' + convert_web_name_to_link_name(
+                                       request.POST.get('_page_name_', ''))
+        response_dict = process_counts(comment_roots, cache_key)
+        return HttpResponse(simplejson.dumps(response_dict),
+                                mimetype='application/javascript')
     elif request.method == 'GET':
-        return HttpResponse('N/A', status=404)
+        comment_roots = sorted(request.GET.keys())
+        comment_roots.pop(comment_roots.index('_page_name_'))
+        cache_key = 'counts_for__' + convert_web_name_to_link_name(
+                                       request.GET.get('_page_name_', ''))
+        response_dict = process_counts(comment_roots, cache_key)
+        return HttpResponse(simplejson.dumps(response_dict),
+                                 mimetype='application/javascript')
     else:
         log_file.info((request.method + ' method for comment counts '
                         'received; not handled; return 400.'))
