@@ -1631,7 +1631,7 @@ def retrieve_comment_counts(request):
                     response_dict[key] = num
 
                 log_file.debug('COUNTS: for %d nodes retrieved in %f secs' %\
-                           (len(request.POST.keys()), time.time()-start_time))
+                         (len(request.POST.keys()-1), time.time()-start_time))
 
             # Should we cache the result for future?
             if (time.time()-start_time) > conf.cache_count_duration:
@@ -1879,7 +1879,9 @@ def commit_updated_document_to_database(app):
 
         document_order[link_name] = next_section
 
-    # Next, order the pages:
+    # Next, order the pages.  The ``ordered_names`` list will grow in size
+    # TODO(KGD): The problem comes from how the document is split in
+    # "LVM" section index.rst
     page_names = document_order.keys()
     ordered_names = [app.env.config.master_doc]
     for idx in xrange(len(page_names)):
