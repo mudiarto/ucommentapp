@@ -344,7 +344,7 @@ var cfgform = {
 
 var make_XHR_commment_count_request = function () {
 	var cfgcounts = {
-			method:  'GET',
+			method:  'POST',
 			on:      {complete: comment_counts_complete},
 			data:    comment_counts,
 			timeout: 10000,
