@@ -251,14 +251,11 @@ side_bar_local_toc_template = '''
 # Assume this Django application is mounted at http://example.com/ucomment-app/
 # and that this application was stored in the directory called "ucommentapp".
 #
-# Then assuming you have added this line to the Django PROJECT's ``urls.py``:
-#                                                      ---------
+# Then you would had to add this line to the Django PROJECT's ``urls.py``:
+#                                                   ---------
 #     (r'^document/', include('ucommentapp.urls')),
 #
-# then users access your document at: http://example.com/ucomment-app/document/
-# For example ``chapter-1``  is available at
-#     http://example.com/ucomment-app/document/chapter-1
-#
+# so users can access the document at: http://example.com/ucomment-app/document/
 
 # When the ucomment application receives this URL, it must strip out the
 # ``document`` part.  We call this this ``url_views_prefix``.  Do not add any

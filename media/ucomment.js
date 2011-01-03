@@ -14,7 +14,7 @@ var USE_MATHJAX = false;
 
 // The same value as the ``url_views_prefix`` values in the Django application's
 // "conf/settings.py" file.
-var URL_VIEWS_PREFIX = 'document';
+var URL_VIEWS_PREFIX = 'document/';
 
 // Turn off the expand/show accordion effect for the Table of Contents
 var USE_TOC_ACCORDION = true;
@@ -80,19 +80,19 @@ YUI().use('node', 'tabview', 'event', 'dd-drag', 'dd-proxy', 'dd-scroll',
 var CLASS_NAME = 'ucomment';
 // The location (last part of URL) used to preview comments (must match
 // with the ``preview_comment`` function specific in Django's urls.py file)
-var XHR_COMMENT_PREVIEW = URL_VIEWS_PREFIX + '/_preview-comment/';
+var XHR_COMMENT_PREVIEW = URL_VIEWS_PREFIX + '_preview-comment/';
 // The location (last part of URL) used to submit comments (must match with the
 // ``submit_and_store_comment`` function specific in Django's urls.py file)
-var XHR_COMMENT_SUBMIT = URL_VIEWS_PREFIX + '/_submit-comment/';
+var XHR_COMMENT_SUBMIT = URL_VIEWS_PREFIX + '_submit-comment/';
 // The location (last part of URL) used to retrieve comment counts when given
 // a list of nodes for a page
-var XHR_COMMENT_COUNTS = URL_VIEWS_PREFIX + '/_retrieve-comment-counts/';
+var XHR_COMMENT_COUNTS = URL_VIEWS_PREFIX + '_retrieve-comment-counts/';
 // The location (last part of URL) used to retrieve comment's HTML when given
 // a comment root
-var XHR_COMMENT_HTML = URL_VIEWS_PREFIX + '/_retrieve-comments/';
+var XHR_COMMENT_HTML = URL_VIEWS_PREFIX + '_retrieve-comments/';
 // The location (last part of URL) used to search document (must match with the
 // ``search_document`` function specific in Django's urls.py file)
-var URL_SEARCH_DOCUMENT = URL_VIEWS_PREFIX + '/_search/';
+var URL_SEARCH_DOCUMENT = URL_VIEWS_PREFIX + '_search/';
 
 
 // Comment block: one block for each element that can be commented

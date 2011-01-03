@@ -1321,11 +1321,8 @@ def render_page_for_web(page, request, search_value=''):
     try:
         toc_page = models.Page.objects.filter(is_toc=True).filter(
                                                             prev_link=None)[0]
-        # This is a clumsy way of finding the link to the TOC because it
-        # is an absolute link, whereas all the other links are relative
-        toc_link = models.Link(link=get_site_url(request, add_path=False,
-                        add_views_prefix=True) + toc_page.link_name,
-                        title='Table of contents')
+        toc_link = models.Link(link=django_reverse('ucomment-root'),
+                               title='Table of contents')
     except IndexError:
         # We only reach here if there is no TOC page in the DB.
         toc_page = ''
@@ -1343,9 +1340,9 @@ def render_page_for_web(page, request, search_value=''):
     root_link = models.Link.objects.filter(link = '___TOC___')[0]
     root_link.link = toc_link.link
 
-    page_body = ''.join(['\n<!-- django-database output starts -->\n',
+    page_body = ''.join(['\n<!-- page output starts -->\n',
                          page.body,
-                         '<!-- /#django-database output ends -->\n'])
+                         '<!-- /page output ends -->\n'])
 
     # Replace any {{IMAGE_LOCATION}} markers in the page.body with a direct
     # link to the media.
