@@ -485,7 +485,7 @@ def submit_and_store_comment(request):
 
     # Response back to user, if everything goes OK
     response = HttpResponse(status=200)
-    response['ucomment'] = 'Submission-OK'
+    response['Ucomment'] = 'Submission-OK'
     try:
         html_template = Template(conf.once_submitted_HTML_template)
     except TemplateSyntaxError as err:

@@ -186,7 +186,7 @@ var posting_complete = function(transactionid, response) {
 	}
 
 	// The user's comment was processed
-	if (response.getResponseHeader('ucomment') == 'Preview-OK'){
+	if (response.getResponseHeader('Ucomment') == 'Preview-OK'){
 		submit_button.set('disabled', false);
 		preview_or_edit_button.set('disabled', true);
 
@@ -220,15 +220,15 @@ var posting_complete = function(transactionid, response) {
 	}
 
 	// Error occurred converting comment to HTML
-	else if (response.getResponseHeader('ucomment')=='Preview-Invalid input'){
+	else if (response.getResponseHeader('Ucomment')=='Preview-Invalid input'){
 		Y.one('#ucomment-submit-button').set('disabled', true);
 		handle_posting_failure(response.responseText);
 	}
-	else if (response.getResponseHeader('ucomment')=='Preview-Exception'){
+	else if (response.getResponseHeader('Ucomment')=='Preview-Exception'){
 		Y.one('#ucomment-submit-button').set('disabled', true);
 		handle_posting_failure(response.responseText);
 	}
-	else if (response.getResponseHeader('ucomment')=='Submission-OK'){
+	else if (response.getResponseHeader('Ucomment')=='Submission-OK'){
 		close_button.setStyle('visibility', 'visible');
 		submit_button.setStyle('visibility', 'hidden');
 		close_button.set('disabled', false);
