@@ -440,7 +440,7 @@ def create_poster(request):
     # Get the poster entry, or create a new one.  Always create a new poster
     # entry for anonymous posters.
     c_IP_address = get_IP_address(request)
-    c_UA_string = request.META['HTTP_USER_AGENT'][0:499]  # avoid DB overflow
+    c_UA_string = request.META.get('HTTP_USER_AGENT' '')[0:499]
     p_default = {'name' : p_name,
                  'long_name': p_name + '__' + c_IP_address + '__' + c_UA_string,
                  'email': p_email,
@@ -580,7 +580,7 @@ def submit_and_store_comment(request):
     # Create the comment object
     c_datetime_submitted = c_datetime_approved = datetime.datetime.now()
     c_IP_address = get_IP_address(request)
-    c_UA_string = request.META['HTTP_USER_AGENT'][0:499]  # avoid DB overflow
+    c_UA_string = request.META.get('HTTP_USER_AGENT', '')[0:499]
     c_approval_code = create_codes_ID(conf.approval_code_length)
     c_rejection_code = create_codes_ID(conf.approval_code_length)
     c_is_approved = c_is_rejected = False
@@ -1397,7 +1397,7 @@ def render_page_for_web(page, request, search_value=''):
             page_body = before + referrer_str + prefix + to_add + suffix
 
     # Create a page hit entry in the database
-    page_hit = models.Hit(UA_string = request.META['HTTP_USER_AGENT'],
+    page_hit = models.Hit(UA_string = request.META.get('HTTP_USER_AGENT', ''),
                    IP_address = get_IP_address(request),
                    page_hit = page.html_title,   # was ``page.link_name``
                    referrer = referrer_str or full_referrer)
