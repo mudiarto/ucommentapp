@@ -261,7 +261,7 @@ def initial_comment_check(request):
         errors = valid_form(p_email, c_comment_RST)
         if errors:
             web_response = HttpResponse(errors, status=200)
-            web_response['ucomment'] = 'Preview-Invalid input'
+            web_response['Ucomment'] = 'Preview-Invalid input'
             return False, web_response
         else:
             return True, c_comment_RST
@@ -290,7 +290,7 @@ def preview_comment(request):
         try:
 
             compiled_comment_HTML = compile_comment(response)
-            web_response['ucomment'] = 'Preview-OK'
+            web_response['Ucomment'] = 'Preview-OK'
         except Exception as err:
             # Should an error occur while commenting, log it, but respond to
             # the user.
@@ -301,7 +301,7 @@ def preview_comment(request):
                                      'reported to the website administrator.'
                                      '<p>UTC time of error: %s' % \
                                      datetime.datetime.utcnow().ctime())
-            web_response['ucomment'] = 'Preview-Exception'
+            web_response['Ucomment'] = 'Preview-Exception'
 
         log_file.info('COMPILE: from IP=%s; comment: "%s"' % \
                         (get_IP_address(request), response))
