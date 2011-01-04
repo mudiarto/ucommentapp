@@ -440,7 +440,7 @@ def create_poster(request):
     # Get the poster entry, or create a new one.  Always create a new poster
     # entry for anonymous posters.
     c_IP_address = get_IP_address(request)
-    c_UA_string = request.META.get('HTTP_USER_AGENT' '')[0:499]
+    c_UA_string = request.META.get('HTTP_USER_AGENT', '')[0:499]
     p_default = {'name' : p_name,
                  'long_name': p_name + '__' + c_IP_address + '__' + c_UA_string,
                  'email': p_email,
