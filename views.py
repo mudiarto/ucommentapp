@@ -1351,6 +1351,7 @@ def render_page_for_web(page, request, search_value=''):
 
     # If user is visiting TOC, but is being referred, show where they came from:
     full_referrer = request.META.get('HTTP_REFERER', '')
+    log_file.debug('REFERER = %s' % full_referrer)
     referrer_str = ''
     if full_referrer:
         # First, make sure the referrer is hosted on the same website as ours
@@ -1490,6 +1491,7 @@ def display_page(page_requested):
     """
     start_time = time.time()
     link_name = convert_web_name_to_link_name(page_requested.path)
+    log_file.debug('Page requested = %s' % page_requested.path)
     ip_address = get_IP_address(page_requested)
     item = models.Page.objects.filter(link_name=link_name)
     if not item:
