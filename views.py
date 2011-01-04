@@ -1654,13 +1654,7 @@ def retrieve_comment_counts(request):
         return HttpResponse(simplejson.dumps(response_dict),
                                 mimetype='application/javascript')
     elif request.method == 'GET':
-        comment_roots = sorted(request.GET.keys())
-        comment_roots.pop(comment_roots.index('_page_name_'))
-        cache_key = 'counts_for__' + convert_web_name_to_link_name(
-                                       request.GET.get('_page_name_', ''))
-        response_dict = process_counts(comment_roots, cache_key)
-        return HttpResponse(simplejson.dumps(response_dict),
-                                 mimetype='application/javascript')
+        return HttpResponse('N/A', status=404)
     else:
         log_file.info((request.method + ' method for comment counts '
                         'received; not handled; return 400.'))
