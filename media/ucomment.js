@@ -127,7 +127,7 @@ var CommentBlock = function(el, comment_root, indicator) {
 var COMMENT_BAR_WIDTH = parseInt(Y.one('#ucomment-border').getStyle('marginLeft'), 10);
 
 //The URL of the XHR resource to which we're POSTing comment data to and from:
-var sURI = document.location.protocol + '//' + document.location.host + '/';
+var sURI = '/'; //document.location.protocol + '//' + document.location.host + '/';
 
 // The horizontal bar that indicates to the user which node is being commented
 var highlightFloater;
@@ -347,7 +347,7 @@ var make_XHR_commment_count_request = function () {
 			method:  'POST',
 			on:      {complete: comment_counts_complete},
 			data:    comment_counts,
-			timeout: 10000,
+			timeout: 15000,
 			// async is important, especially for long pages.
 			sync:    false
 		};
@@ -555,7 +555,7 @@ var initialize = function() {
 			method: 'POST',
 			on:  {complete: show_comment_HTML},
 			data: {'comment_root': comment_root, order: 'forward'},
-			timeout: 10000
+			timeout: 15000
 		};
 		var request = Y.io(sURI + XHR_COMMENT_HTML, cfg_get_html);
 	};

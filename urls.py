@@ -24,6 +24,8 @@ urlpatterns = patterns('',
     url(r'^_search/(?P<search_terms>.*?)(?P<search_type>/+.*?){0,1}(?P<with_case>/+case=.*?){0,1}$',
      views.search_document, name='ucomment-search-document-GET'),
 
+    url(r'^_retrieve-page-name/$', views.retrieve_page_name, name='ucomment-retrieve-pagename'),
+
     # XHR path to the server: Javascript uses this to preview user's comment
     # before allowing it to be submitted.
     url(r'^_preview-comment/$', views.preview_comment, name='ucomment-preview-comment'),

@@ -1662,6 +1662,40 @@ def retrieve_comment_counts(request):
                         'received; not handled; return 400.'))
         return HttpResponse(status=400)
 
+def retrieve_page_name(request):
+    """
+    Returns the page title given the page hyperlink in the request (POST), it .
+    """
+    if request.method == 'POST':
+        page_name = request.POST.get('_page_name_', '')
+        link_name = convert_web_name_to_link_name(page_name)
+        item = models.Page.objects.filter(link_name=link_name)
+        if not item:
+            # Requested the master_doc (main document)
+            if link_name == '':
+                toc_page = models.Page.objects.filter(is_toc=True).filter(\
+                                                                prev_link=None)
+                item = toc_page
+            #elif models.Page.objects.filter(link_name=link_name + '/index'):
+                ## To accommodate a peculiar Sphinx settings for PickleHTMLBuilder
+                ## It may lead to broken links for images that are included on
+                ## this page.
+                #item = models.Page.objects.filter(link_name=link_name + '/index')
+            else:
+                log_file.debug('NAME request: unknown page "%s"' % link_name)
+                return HttpResponse('', status=404)
+
+        page = item[0]
+        log_file.debug('NAME request = %s; returned %s' % (link_name, page_name))
+        return HttpResponse(page.html_title)
+    elif request.method == 'GET':
+        return HttpResponse('', status=404)
+    else:
+        log_file.info((request.method + ' method for comment counts '
+                        'received; not handled; return 400.'))
+        return HttpResponse(status=400)
+
+
 # Publishing update functions
 # ----------------------------
 def publish_update_document(request):
@@ -2417,7 +2451,7 @@ def search_document(request, search_terms='', search_type='AND',
 
     By default the search is case-insensitive (``with_case`` is False).
     """
-    CONTEXT = 90
+    CONTEXT = 90   # characters around the search term
     if request.method == 'GET':
         search = str(search_terms)
         search_type = str(search_type).strip('/').upper()
