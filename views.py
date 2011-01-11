@@ -1666,6 +1666,8 @@ def retrieve_page_name(request):
     """
     Returns the page title given the page hyperlink in the request (POST), it .
     """
+    # TODO(KGD): add section name and sub-page name
+    # e.g. Design and analysis of experiments: Fractional factorial designs
     if request.method == 'POST':
         page_name = request.POST.get('_page_name_', '')
         link_name = convert_web_name_to_link_name(page_name)
@@ -1929,6 +1931,9 @@ def commit_updated_document_to_database(app):
     for idx in xrange(len(page_names)):
         if ordered_names[idx] is not None:
             ordered_names.append(document_order[ordered_names[idx]])
+        else:
+            #ordered_names.append(None)
+            break
     # The last ``None`` element designates the end of the document
     ordered_names.pop()
     # Check if there were docs not included in the toctree: add them at the end
@@ -2014,10 +2019,19 @@ def commit_updated_document_to_database(app):
                 title = page_info['prev']['title'])
         except TypeError:
             # Only the TOC won't have a previous link.  We rely on this fact to
-            # filter the pages to locate the TOC.
-            prev_link = None
+            # filter the pages to locate the root TOC.
+            if is_toc:
+                prev_link = None
+            else:
+                # This is for pages that happened to be compiled, but don't
+                # fall in the document structure.  For example, we have RST
+                # files, but they were not included in any toctree, yet they
+                # were compiled by Sphinx.
+                prev_link, _ = models.Link.objects.get_or_create(
+                    link = u'/',
+                    title = u'')
 
-            # While we are here, create a "root link" with the appropriate
+            # While we are here, create a "root TOC" link with the appropriate
             # title: use the ``project`` setting from the Sphinx conf.py file.
             # The actual link will be determined on page request.
             models.Link.objects.get_or_create(link = '___TOC___',
@@ -2272,7 +2286,7 @@ def dump_relevent_fixtures(request):
                                  'objects to the fixture file: %s' % \
                                  (model, filename)), status=200)
 
-    return HttpResponse(('All fixtures successfully saved to %s.' % \
+    return HttpResponse(('All fixtures successfully saved to %s' % \
                          conf.django_fixtures_dir), status=200)
 
 def load_from_fixtures(request):
