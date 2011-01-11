@@ -1932,8 +1932,8 @@ def commit_updated_document_to_database(app):
         if ordered_names[idx] is not None:
             ordered_names.append(document_order[ordered_names[idx]])
         else:
-            #ordered_names.append(None)
             break
+
     # The last ``None`` element designates the end of the document
     ordered_names.pop()
     # Check if there were docs not included in the toctree: add them at the end
@@ -2028,7 +2028,7 @@ def commit_updated_document_to_database(app):
                 # files, but they were not included in any toctree, yet they
                 # were compiled by Sphinx.
                 prev_link, _ = models.Link.objects.get_or_create(
-                    link = u'/',
+                    link = u'../',
                     title = u'')
 
             # While we are here, create a "root TOC" link with the appropriate

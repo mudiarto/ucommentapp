@@ -127,7 +127,7 @@ var CommentBlock = function(el, comment_root, indicator) {
 var COMMENT_BAR_WIDTH = parseInt(Y.one('#ucomment-border').getStyle('marginLeft'), 10);
 
 //The URL of the XHR resource to which we're POSTing comment data to and from:
-var sURI = '/'; //document.location.protocol + '//' + document.location.host + '/';
+var sURI = '/';
 
 // The horizontal bar that indicates to the user which node is being commented
 var highlightFloater;
