@@ -1474,7 +1474,9 @@ def render_page_for_web(page, request, search_value=''):
                     'local_TOC': sidebar_local_toc,
                     'sidebar_html': page.sidebar,
                     'css_body_class': css_body_class,
-                    'about_commenting_system': conf.html_about_commenting}
+                    'about_commenting_system': conf.html_about_commenting,
+                    'page_hits': page.number_of_HTML_visits,
+                    'updated_on': page.updated_on}
     page_content.update(csrf(request))  # Handle the search form's CSRF
 
     # TODO(KGD): redirect to /_search/search terms/AND/True if required
