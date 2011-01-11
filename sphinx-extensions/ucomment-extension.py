@@ -409,7 +409,8 @@ class ucomment_html_translator(SmartyPantsHTMLTranslator):
         we don't add this info, because we will do it for the child paragraph
         later on.
         """
-        if node.children[0].tagname not in ['paragraph', 'compact_paragraph']:
+        if len(node.children)==0 or node.children[0].tagname not in \
+                                    ['paragraph', 'compact_paragraph']:
             self.extend_node_attrs(node, bias=0)
 
         self.visit_list_item_original(self, node)
