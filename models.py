@@ -78,7 +78,7 @@ class Page(models.Model):
     # base RST file that created the HTML
     source_name = models.CharField(max_length=250)
     # For information only
-    updated_on = models.DateTimeField(auto_now=False)
+    updated_on = models.DateTimeField(auto_now=False, auto_now_add=True)
     # So that we can add it to the HTML (not used at the moment)
     PDF_file_name = models.CharField(max_length=250)
     # Number of page retrievals

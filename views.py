@@ -2066,6 +2066,8 @@ def commit_updated_document_to_database(app):
 
         existing_page = prior_pages.filter(link_name=link_name)
         if existing_page:
+            # TODO(KGD): be more selective when updating: if the content is
+            # the same as last time, then don't change the ``updated_on`` field
             page = existing_page[0]
             page.revision_changeset = sphinx_settings['revision_changeset']
             page.html_title = page_info['title']
