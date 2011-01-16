@@ -2091,6 +2091,10 @@ def commit_updated_document_to_database(app):
             if page.search_text.encode('utf-8') != search_text:
                 # If the content has changed, only then change ``updated_on``
                 page.updated_on = datetime.datetime.now()
+            if is_toc or is_chapter_index:
+                if page.body != '\n' + page_info['body'] + '\n':
+                    page.updated_on = datetime.datetime.now()
+
             page.revision_changeset = sphinx_settings['revision_changeset']
             page.html_title = page_info['title']
             page.is_toc = is_toc or is_chapter_index
