@@ -2332,9 +2332,12 @@ def sanitize_search_text(text):
     * Underlines for headings: e.g. "-----"
     * inline math roles :math:`....` (leaves the part inside the role beind
     * cross-references: e.g.  .. _my-cross-reference:
+    * .. rubric:: XYZ is left just as XYZ
 
     TODO(KGD):
     * table_row = re.compile(r'(={2,})|(\+-{2,})')
+    * figure and image directives; and the options that go with them
+
     """
     text_list = text.split('\n')
     ucomment_lines = re.compile(r'^\s*\.\. ucomment::\s*(.*?):')
@@ -2354,6 +2357,7 @@ def sanitize_search_text(text):
     div_re = re.compile(div_re_str)
 
     crossref_re = re.compile(r'^\s*\.\. _(.*?):')
+    rubric_re = re.compile(r'^\s*(\.\. rubric:: )(.*?)')
 
     # Remove the :math:`...` part, leaving only the ... portion behind.
     math_role = re.compile(r'(:math:`)(.*?)(`)')
@@ -2361,6 +2365,7 @@ def sanitize_search_text(text):
     out = []
     for line in text_list:
         line = math_role.sub('\g<2>', line)
+        line = rubric_re.sub('\g<2>', line)
         out.append(line)
         if ucomment_lines.match(line):
             out.pop()
@@ -2499,7 +2504,7 @@ def format_search_pages_for_web(pages, context, with_case):
 
         results[page].append('<li><a href="%s">%s</a>' % (\
                             django_reverse('ucomment-root') + page.link_name +\
-                            '?highlight=' + ' '.join(search_words) + \
+                            '/?highlight=' + ' '.join(search_words) + \
                             '&with_case=' + str(with_case), page.html_title))
         if page_counts[page] > 1:
             results[page].append(('<span id="ucomment-search-count">'
