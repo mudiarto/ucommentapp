@@ -1486,6 +1486,8 @@ def render_page_for_web(page, request, search_value=''):
         css_body_class = 'ucomment-page'
 
     # Finally, send this all off to the template for rendering.
+    # NOTE: any additional fields added to this dictionary must also be added
+    #       to the named tuple for the search page: ``def search_document(...)``
     page_content = {'html_title': page.html_title,
                     'body_html': page_body,
                     'nav_links': nav_links,
@@ -1983,8 +1985,7 @@ def commit_updated_document_to_database(app):
             f.close()
 
         # Aim: get a text version of each page to generate a search index
-        # (Later on we will trigger an index refresh using sphinxsearch.com)
-        # For now, get the RST source code and store that in the database.
+        # Get the RST source code, clean it, and store that in the database.
         # TOC and chapter indicies are not to be indexed for the search engine.
 
         src = app.builder.srcdir + os.sep + fname + app.config.source_suffix
@@ -2000,9 +2001,10 @@ def commit_updated_document_to_database(app):
             try:
                 f = file(src, 'r')
                 search_text = ''.join(f.readlines())
+                search_text = sanitize_search_text(search_text)
             except IOError:
                 raise IOError(('An IOError occurred when processing RST '
-                               'source: %s' % src))
+                               'source file: %s' % src))
             finally:
                 f.close()
 
@@ -2085,14 +2087,14 @@ def commit_updated_document_to_database(app):
 
         existing_page = prior_pages.filter(link_name=link_name)
         if existing_page:
-            # TODO(KGD): be more selective when updating: if the content is
-            # the same as last time, then don't change the ``updated_on`` field
             page = existing_page[0]
+            if page.search_text.encode('utf-8') != search_text:
+                # If the content has changed, only then change ``updated_on``
+                page.updated_on = datetime.datetime.now()
             page.revision_changeset = sphinx_settings['revision_changeset']
             page.html_title = page_info['title']
             page.is_toc = is_toc or is_chapter_index
             page.source_name = unsplit_source_name
-            page.updated_on = datetime.datetime.now()
             page.PDF_file_name = 'STILL_TO_COME.pdf'
             page.body = '\n' + page_info['body'] + '\n'
             page.search_text = search_text
@@ -2318,6 +2320,57 @@ def load_from_fixtures(request):
 
 # Searching the document text
 # ---------------------------
+def sanitize_search_text(text):
+    """
+    Cleans the RST source code to remove:
+
+    * .. ucomment:: directives
+    * Underlines for headings: e.g. "-----"
+    * inline math roles :math:`....` (leaves the part inside the role beind
+    * cross-references: e.g.  .. _my-cross-reference:
+
+    TODO(KGD):
+    * table_row = re.compile(r'(={2,})|(\+-{2,})')
+    """
+    text_list = text.split('\n')
+    ucomment_lines = re.compile(r'^\s*\.\. ucomment::\s*(.*?):')
+    VALID_TITLES = ['!', '"', '#', '$', '%', "'", '(', ')', '*', '+',
+                    ',', '-', '.', '/', ':', ';', '<', '=', '>', '?',
+                    '@', '[', '\\', ']', '^', '_', '`', r'{', '|',
+                    '}', '~']
+
+    div_re_str = r'^'
+    for entry in VALID_TITLES:
+        if entry in ['^', '*', '+', '$', '(', ')', '-', '.', '?', '[', ']',
+                      '\\', '{', '}', '|']:
+            entry = '\\' + entry
+
+        div_re_str += entry + r'{3,}|'
+    div_re_str = div_re_str[0:-1] + '$'
+    div_re = re.compile(div_re_str)
+
+    crossref_re = re.compile(r'^\s*\.\. _(.*?):')
+
+    # Remove the :math:`...` part, leaving only the ... portion behind.
+    math_role = re.compile(r'(:math:`)(.*?)(`)')
+
+    out = []
+    for line in text_list:
+        line = math_role.sub('\g<2>', line)
+        out.append(line)
+        if ucomment_lines.match(line):
+            out.pop()
+            continue
+        if div_re.match(line):
+            out.pop()
+            continue
+        if crossref_re.match(line):
+            out.pop()
+            continue
+
+    return '\n'.join(out)
+
+
 def format_search_pages_for_web(pages, context, with_case):
     """
     Receives a dictionary.  The keys are ``Page`` objects, and the corresponding
@@ -2544,7 +2597,8 @@ def search_document(request, search_terms='', search_type='AND',
     # that to the user.  It is infact a named tuple, which has the same
     # behaviour as a ``Page`` object
     page = namedtuple('Page', ('revision_changeset next_link prev_link sidebar '
-                      'parent_link html_title body local_toc link_name is_toc'))
+                      'parent_link html_title body local_toc link_name is_toc '
+                      'number_of_HTML_visits updated_on'))
     search_output = page(revision_changeset='',
                          next_link = None,
                          prev_link = None,
@@ -2554,6 +2608,8 @@ def search_document(request, search_terms='', search_type='AND',
                          local_toc = '',
                          is_toc = True, # prevents sidebar
                          sidebar = '',  # but still set it to empty
+                         number_of_HTML_visits = 0,
+                         updated_on = datetime.datetime.now(),
                          link_name = request.path.lstrip(\
                                        django_reverse('ucomment-root')[0:-1]))
 
