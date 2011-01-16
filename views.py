@@ -22,9 +22,9 @@ Also provide option NOT to send an email at all (simply reject the posting).
 
 # Standard library imports
 import os, sys, random, subprocess, pickle, re, logging.handlers, datetime
-import smtplib, time
-from shutil import copyfile
+import smtplib, time, shutil
 from collections import defaultdict, namedtuple
+from StringIO import StringIO
 
 # Settings for the ucomment application
 from conf import settings as conf
@@ -34,6 +34,7 @@ from django import forms, template
 from django.shortcuts import render_to_response
 from django.contrib import auth as django_auth
 from django.core import cache as django_cache
+from django.core import serializers
 from django.core.context_processors import csrf
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -46,6 +47,7 @@ from jinja2.exceptions import TemplateSyntaxError
 
 # Sphinx import
 from sphinx.util.osutil import ensuredir
+from sphinx.application import Sphinx, SphinxError
 
 if conf.repo_DVCS_type == 'hg':
     import hgwrapper as dvcs
@@ -288,13 +290,12 @@ def preview_comment(request):
     if success:
         web_response = HttpResponse(status=200)
         try:
-
             compiled_comment_HTML = compile_comment(response)
             web_response['Ucomment'] = 'Preview-OK'
         except Exception as err:
             # Should an error occur while commenting, log it, but respond to
             # the user.
-            UcommentError(err, ('An exception occurred while generating a  '
+            UcommentError(err, ('An exception occurred while generating a '
                                 'comment preview for the user.'))
             compiled_comment_HTML = ('<p>An error occurred while processing '
                                      'your comment.  The error has been '
@@ -332,17 +333,39 @@ def call_sphinx_to_compile(working_dir):
 
     Returns nothing, but logs if an error occurred.
     """
-
-    sphinx_command = ['sphinx-build', '-b', 'pickle', '-d',
-                      '_build/doctrees', '.', '_build/pickle']
+    build_dir = os.path.abspath(working_dir + os.sep + '_build')
+    ensuredir(working_dir)
+    ensuredir(build_dir)
+    status = StringIO()
+    warning = StringIO()
     try:
-        subprocess.check_call(sphinx_command,
-                              stdout=subprocess.PIPE,
-                              cwd=working_dir)
-    except subprocess.CalledProcessError as err:
-        log_file.error('An error occurred when generating HTML from comment.')
-        raise(err)
-    log_file.debug('COMMENT: called Sphinx; pickled the HTML.')
+        app = Sphinx(srcdir=working_dir, confdir=working_dir,
+                     outdir = build_dir + os.sep + 'pickle',
+                     doctreedir = build_dir + os.sep + 'doctrees',
+                     buildername = 'pickle',
+                     status = status,
+                     warning = warning,
+                     freshenv = True,
+                     warningiserror = False,
+                     tags = [])
+
+        # Call the ``pickle`` builder
+        app.build()
+
+    except SphinxError as e:
+        if warning.tell():
+            warning.seek(0)
+            for line in warning.readlines():
+                log_file.warn('COMMENT: ' + line)
+
+        msg = ('Sphinx error occurred when compiling comment (error type = %s): '
+               '%s'  % (e.category, str(e)))
+        UcommentError(err, msg)
+
+    if app.statuscode == 0:
+        log_file.info("COMMENT: Successfully compiled the reader's comment.")
+    else:
+        log_file.error("COMMENT: Non-zero status code when compiling.")
 
 def convert_raw_RST(raw_RST):
     """
@@ -380,7 +403,7 @@ def compile_RST_to_HTML(raw_RST):
         this_file = os.path.abspath(__file__).rstrip(os.sep)
         parent = this_file[0:this_file.rfind(os.sep)]
         src = os.sep.join([parent, 'sphinx-extensions', 'ucomment-conf.py'])
-        copyfile(src, conf.comment_compile_area + os.sep + 'conf.py')
+        shutil.copyfile(src, conf.comment_compile_area + os.sep + 'conf.py')
     else:
         f.close()
 
@@ -412,7 +435,7 @@ def transfer_html_media(html_body):
     ensuredir(dst_dir)
 
     for mathfile in os.listdir(mathdir):
-        copyfile(mathdir + mathfile, dst_dir + mathfile)
+        shutil.copyfile(mathdir + mathfile, dst_dir + mathfile)
 
     src_prefix = 'src="'
     math_prefix = '_images' + os.sep + 'math' + os.sep
@@ -1755,7 +1778,6 @@ def call_sphinx_to_publish():
                                     'extension'))
 
     else:
-        import shutil
         try:
             shutil.copy(srcdir + 'ucomment-extension.py',
                     conf.local_repo_physical_dir)
@@ -1765,9 +1787,6 @@ def call_sphinx_to_publish():
 
     # When Sphinx is called to compile the document, it is expected that the
     # document's ``conf.py`` has the correct path to the extensions.
-    from sphinx.application import Sphinx, SphinxError
-
-    from StringIO import StringIO
     status = StringIO()
     warning = StringIO()
 
@@ -2264,7 +2283,7 @@ def dump_relevent_fixtures(request):
         return HttpResponseRedirect(django_reverse('ucomment-admin-signin'))
 
     style = 'xml'
-    from django.core import serializers
+
     fixtures = (    (models.Comment, 'Comment.'+style),
                     (models.CommentReference, 'CommentReference.'+style),
                     (models.CommentPoster, 'CommentPoster.'+style),
